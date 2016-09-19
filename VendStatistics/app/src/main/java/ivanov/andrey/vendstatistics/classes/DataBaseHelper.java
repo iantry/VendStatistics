@@ -13,13 +13,13 @@ import ivanov.andrey.vendstatistics.activitys.MainActivity;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String DATA_BASE_NAME = "vendStatisticsDB";
-    private static final String TABLE_MAIN = "listOfAutomat";
+    private static final int VERSION_DATA_BASE = 1;
+    public static final String TABLE_MAIN = "listOfAutomats";
     private static final String COLUMN_ID = "_id integer primary key autoincrement";
     private static final String COLUMN_NAME = "name text";
     private static final String COLUMN_NUMBER = "number text";
-    private static final String COLUMN_COLUMNS = "columns text";
-
-    public static final int VERSION_DATA_BASE = 1;
+    private static final String COLUMN_DRINKS = "drinks text";
+    private static final String COLUMN_DRINKS_PRICE = "drinks_price text";
 
     public DataBaseHelper(Context context) {
 
@@ -36,7 +36,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         Log.d(MainActivity.LOG_TAG, "--- onCreate database ---");
 // создаем таблицу с полями
-        sqLiteDatabase.execSQL("create table " + TABLE_MAIN + " ( " + COLUMN_ID + ", " + COLUMN_NAME + ", " + COLUMN_NUMBER + ", " + COLUMN_COLUMNS + " );");
+        sqLiteDatabase.execSQL("create table " + TABLE_MAIN + " ( " + COLUMN_ID + ", " + COLUMN_NAME + ", " + COLUMN_NUMBER + ", " + COLUMN_DRINKS + ", " + COLUMN_DRINKS_PRICE + " );");
 
     }
 }
