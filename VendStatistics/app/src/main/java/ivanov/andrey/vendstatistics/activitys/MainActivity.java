@@ -21,7 +21,7 @@ import ivanov.andrey.vendstatistics.classes.FactoryIntent;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = "logTag";
+    public static final String LOG_TAG = "myLog";
     public static String TABLE_NAME = "New_Table";
 
     Toolbar toolbar;

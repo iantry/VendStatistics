@@ -1,6 +1,7 @@
 package ivanov.andrey.vendstatistics.activitys;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,7 +25,7 @@ public class CreateNewAutomat extends AppCompatActivity {
 
     public static final String LOG_TAG = "myLog";
 
-    Button buttonAdd, buttonSave;
+    Button buttonAdd, buttonSave, buttonRead;
     EditText editTextName, editTextNumber, editTextNameDrink, editTextPrice;
     ListView listViewDrinks;
     DrinksAdapter adapter;
@@ -32,6 +33,7 @@ public class CreateNewAutomat extends AppCompatActivity {
     String drinks, drinksPrice;
     Automat automat;
     DataBaseHelper dbHelper;
+    SQLiteDatabase db;
 
 
     @Override
@@ -57,12 +59,15 @@ public class CreateNewAutomat extends AppCompatActivity {
         drinksList = new ArrayList<>();
         dbHelper = new DataBaseHelper(this);
         drinks = "";
+
+         db = dbHelper.getWritableDatabase();
     }
 
     private void setClickListener() {
 
         buttonAdd.setOnClickListener(onClickListener);
         buttonSave.setOnClickListener(onClickListener);
+        buttonRead.setOnClickListener(onClickListener);
     }
 
     private void initViews() {
@@ -74,6 +79,8 @@ public class CreateNewAutomat extends AppCompatActivity {
         editTextNameDrink = (EditText)findViewById(R.id.editTextNameDrink);
         editTextPrice = (EditText)findViewById(R.id.editTextPrice);
         listViewDrinks = (ListView)findViewById(R.id.listViewDrinks);
+
+        buttonRead = (Button)findViewById(R.id.buttonRead);
 
     }
 
@@ -88,15 +95,48 @@ public class CreateNewAutomat extends AppCompatActivity {
                 case R.id.buttonSave:
                     addAutomat();
                     break;
+                case R.id.buttonRead:
+                    readFromDB();
+                    break;
             }
         }
     };
 
 
+    private void readFromDB(){
+        Log.d(LOG_TAG, "--- Rows in listOfAutomats: ---");
+
+        Cursor c = db.query("listOfAutomats", null, null, null, null, null, null);
+
+        if (c.moveToFirst()) {
+
+
+            int idColIndex = c.getColumnIndex("i_d");
+            int nameColIndex = c.getColumnIndex("name");
+            int numberColIndex = c.getColumnIndex("number");
+            int drinksColIndex = c.getColumnIndex("drinks");
+            int drinks_priceColIndex = c.getColumnIndex("drinks_price");
+            Log.d(LOG_TAG, "Данные из БД");
+            do {
+// получаем значения по номерам столбцов и пишем все в лог
+                Log.d(LOG_TAG,
+                        "ID = " + c.getInt(idColIndex) +
+                                ", name = " + c.getString(nameColIndex) +
+                                ", number = " + c.getString(numberColIndex) +
+                                ", drinks = " + c.getString(drinksColIndex) +
+                                ", drinks_price = " + c.getString(drinks_priceColIndex));
+// переход на следующую строку
+// а если следующей нет (текущая - последняя), то false - выходим из цикла
+            } while (c.moveToNext());
+        } else
+            Log.d(LOG_TAG, "0 rows");
+    }
+
+
     private void addAutomat() {
 
-        String name = editTextName.getText().toString().replaceAll(" ","");
-        String number = editTextNumber.getText().toString().replaceAll(" ", "");
+        String name = editTextName.getText().toString().trim();
+        String number = editTextNumber.getText().toString().trim();
 
         if(name.isEmpty()) {
             Toast.makeText(CreateNewAutomat.this, "Вы не ввели название автомата", Toast.LENGTH_SHORT).show();
@@ -105,8 +145,7 @@ public class CreateNewAutomat extends AppCompatActivity {
             Toast.makeText(CreateNewAutomat.this, "Вы не ввели номер автомата", Toast.LENGTH_SHORT).show();
         }
         else {
-            automat = new Automat(editTextName.getText().toString(), editTextNumber.getText().toString());
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            automat = new Automat(name, number);
             ContentValues contentValues = new ContentValues();
 
             createRowDrinks();
@@ -116,7 +155,7 @@ public class CreateNewAutomat extends AppCompatActivity {
             contentValues.put("drinks", drinks);
             contentValues.put("drinks_price", drinksPrice);
 
-            long rowId = db.insert("listOfAutomats",null, contentValues);
+            long rowId = db.insert("listOfAutomats", null , contentValues);
 
             Log.d(LOG_TAG, "Автомат добавлен ID = " + rowId);
 
@@ -128,19 +167,19 @@ public class CreateNewAutomat extends AppCompatActivity {
 
     private String createTable() {
 
-        String table = "Create table " + automat.getNumber() + " ( id INTEGER PRIMARY KEY AUTOINCREMENT, date text";
+        String table = "Create table automat" + automat.getNumber() + " ( id INTEGER PRIMARY KEY AUTOINCREMENT, date text, ";
 
         replaceSpaceInDrinksName();
 
         for(int i = 0; i < drinksList.size(); i++) {
 
             if(i < (drinksList.size() - 1)) {
-                table = table + drinksList.get(i).getName() + "integer, ";
+                table = table + drinksList.get(i).getName() + " integer, ";
             }
-            else table = table + drinksList.get(i).getName() + "integer );";
+            else table = table + drinksList.get(i).getName() + " integer );";
         }
 
-        Log.d(LOG_TAG, "строка сформированная для создания таблицы" + table);
+        Log.d(LOG_TAG, "строка сформированная для создания таблицы " + table);
         return table;
     }
 
@@ -174,8 +213,8 @@ public class CreateNewAutomat extends AppCompatActivity {
 
     private void addDrink() {
 
-        String name = editTextNameDrink.getText().toString().replaceAll(" ","");
-        String price = editTextPrice.getText().toString().replaceAll(" ", "");
+        String name = editTextNameDrink.getText().toString().trim();
+        String price = editTextPrice.getText().toString().trim();
         if(name.isEmpty()) {
             Toast.makeText(CreateNewAutomat.this, "Вы не ввели название напитка", Toast.LENGTH_SHORT).show();
         }
@@ -183,7 +222,7 @@ public class CreateNewAutomat extends AppCompatActivity {
             Toast.makeText(CreateNewAutomat.this, "Вы не ввели цену напитка", Toast.LENGTH_SHORT).show();
         }
         else {
-            Drink drink = new Drink(editTextNameDrink.getText().toString(), editTextPrice.getText().toString());
+            Drink drink = new Drink(name, price);
             drinksList.add(drink);
             adapter.notifyDataSetChanged();
             editTextNameDrink.setText("");
