@@ -60,7 +60,7 @@ public class CreateNewAutomat extends AppCompatActivity {
         drinksList = new ArrayList<>();
         drinks = "";
         myApplication = MyApplication.getfInstance();
-        listOfExistAutomat = readExistAutomats();
+        listOfExistAutomat = getExistAutomats();
     }
 
     private void setClickListener() {
@@ -152,7 +152,7 @@ public class CreateNewAutomat extends AppCompatActivity {
                 ContentValues contentValues = new ContentValues();
                 prepareDrinksForDB();
                 contentValues.put("name", name);
-                contentValues.put("number", number);
+                contentValues.put("number", "№ " + number);
                 contentValues.put("drinks", drinks);
                 contentValues.put("drinks_price", drinksPrice);
 
@@ -183,15 +183,12 @@ public class CreateNewAutomat extends AppCompatActivity {
             int drinks_priceColIndex = c.getColumnIndex("drinks_price");
             Log.d(LOG_TAG, "Данные из БД");
             do {
-// получаем значения по номерам столбцов и пишем все в лог
                 Log.d(LOG_TAG,
                         "ID = " + c.getInt(idColIndex) +
                                 ", name = " + c.getString(nameColIndex) +
                                 ", number = " + c.getString(numberColIndex) +
                                 ", drinks = " + c.getString(drinksColIndex) +
                                 ", drinks_price = " + c.getString(drinks_priceColIndex));
-// переход на следующую строку
-// а если следующей нет (текущая - последняя), то false - выходим из цикла
             } while (c.moveToNext());
         } else
             Log.d(LOG_TAG, "0 rows");
@@ -200,7 +197,7 @@ public class CreateNewAutomat extends AppCompatActivity {
     }
 
 
-    private ArrayList<String> readExistAutomats(){
+    private ArrayList<String> getExistAutomats(){
 
         ArrayList<String> listOfAutomats = new ArrayList<>();
 
@@ -251,7 +248,6 @@ public class CreateNewAutomat extends AppCompatActivity {
             dr.setName(dr.getName().replace(" ", "_"));
             drinksList.set(i, dr);
         }
-
     }
 
     private void prepareDrinksForDB() {

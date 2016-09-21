@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:paddingTop="10dp"
+    android:paddingRight="30dp"
+    android:paddingEnd="30dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="20dp"
+    android:paddingStart="20dp">
+    
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Saeco Cristallo 400"
+        android:textSize="18sp"
+        android:textColor="@color/black_color"
+        android:id="@+id/automatName"
+        android:layout_weight="1"
+        android:gravity="start"
+
+        />
+
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="№ 001"
+        android:textSize="18sp"
+        android:textColor="@color/black_color"
+        android:id="@+id/automatNumber"
+        android:layout_weight="1"
+        android:gravity="end"/>
+
+
+</LinearLayout>

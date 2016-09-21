@@ -2,6 +2,7 @@ package ivanov.andrey.vendstatistics.classes;
 
 import android.app.Application;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -11,6 +12,9 @@ import ivanov.andrey.vendstatistics.activitys.MainActivity;
  * Created by Andrey on 20.09.2016.
  */
 public class MyApplication extends Application {
+
+
+    public static final String LOG_TAG = "myLog";
 
     private static MyApplication fInstance;
     DataBaseHelper dbHelper;
@@ -45,6 +49,16 @@ public class MyApplication extends Application {
 
         Log.d(MainActivity.LOG_TAG, "--- Соединение с БД закрыто ---");
 
+    }
+
+
+    public Cursor readExistAutomats(Context context){
+
+        db = connectToDB(context);
+        Cursor cursor = db.query("listOfAutomats", null, null, null, null, null, null);
+
+
+        return cursor;
     }
 
 }

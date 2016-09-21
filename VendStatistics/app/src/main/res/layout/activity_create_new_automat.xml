@@ -115,7 +115,7 @@
                     android:text="Добавить"
                     android:textAllCaps="false"
                     android:layout_weight="1"
-                    android:layout_marginBottom="80dp"/>
+                    android:layout_marginBottom="10dp"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -129,9 +129,7 @@
         android:layout_height="match_parent"
         android:id="@+id/listViewDrinks"
         android:layout_below="@id/scroll_view"
-        android:layout_above="@+id/buttonSave"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_above="@+id/buttonSave" />
 
     <Button
         android:layout_marginTop="5dp"

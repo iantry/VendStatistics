@@ -28,6 +28,7 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
         this.drinks = drinks;
 
         layoutInflater  = LayoutInflater.from(context);
+
     }
 
     @Override
