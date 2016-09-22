@@ -2,7 +2,6 @@ package ivanov.andrey.vendstatistics.activitys;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -31,7 +30,6 @@ public class CreateNewAutomat extends AppCompatActivity {
     ArrayList<String> listOfExistAutomat;
     String drinks, drinksPrice;
     Automat automat;
-    SQLiteDatabase db;
     MyApp myApp;
 
 
@@ -128,7 +126,7 @@ public class CreateNewAutomat extends AppCompatActivity {
     private void addAutomat() {
 
         String name = editTextName.getText().toString().trim();
-        String number = editTextNumber.getText().toString().trim();
+        String number =  editTextNumber.getText().toString().trim();
 
         if(name.isEmpty()) {
             Toast.makeText(CreateNewAutomat.this, "Вы не ввели название автомата", Toast.LENGTH_SHORT).show();
@@ -138,13 +136,13 @@ public class CreateNewAutomat extends AppCompatActivity {
         }
         else {
 
-            if(listOfExistAutomat.contains(number)) {
+            if(listOfExistAutomat.contains("№ " + number)) {
 
                 Toast.makeText(CreateNewAutomat.this, "Автомат с таким номером уже существует", Toast.LENGTH_SHORT).show();
             }
             else {
 
-                db = myApp.connectToDB(CreateNewAutomat.this);
+                myApp.connectToDB();
 
                 automat = new Automat(name, number);
                 ContentValues contentValues = new ContentValues();
@@ -154,9 +152,9 @@ public class CreateNewAutomat extends AppCompatActivity {
                 contentValues.put(MyApp.COLUMN_DRINKS, drinks);
                 contentValues.put(MyApp.COLUMN_DRINKS_PRICE, drinksPrice);
 
-                long rowId = db.insert(MyApp.TABLE_MAIN, null, contentValues);
+                long rowId = myApp.insertToTable(MyApp.TABLE_MAIN, contentValues);
                 Log.d(MyApp.LOG_TAG, "Автомат добавлен ID = " + rowId);
-                db.execSQL(createTable());
+                myApp.createTable(getStringCreateTable());
                 Toast.makeText(CreateNewAutomat.this, "Автомат добавлен", Toast.LENGTH_SHORT).show();
                 myApp.closeConnectToDB();
                 this.finish();
@@ -166,11 +164,11 @@ public class CreateNewAutomat extends AppCompatActivity {
 
     private void readFromDB(){
 
-        db = myApp.connectToDB(CreateNewAutomat.this);
+        myApp.connectToDB();
 
         Log.d(MyApp.LOG_TAG, "--- Rows in listOfAutomats: ---");
 
-        Cursor c = db.query("listOfAutomats", null, null, null, null, null, null);
+        Cursor c = myApp.readAllData(MyApp.TABLE_MAIN);
 
         if (c.moveToFirst()) {
 
@@ -182,7 +180,7 @@ public class CreateNewAutomat extends AppCompatActivity {
             Log.d(MyApp.LOG_TAG, "Данные из БД");
             do {
                 Log.d(MyApp.LOG_TAG,
-                        "ID = " + c.getInt(idColIndex) +
+                                "  ID = " + c.getInt(idColIndex) +
                                 ", name = " + c.getString(nameColIndex) +
                                 ", number = " + c.getString(numberColIndex) +
                                 ", drinks = " + c.getString(drinksColIndex) +
@@ -198,8 +196,8 @@ public class CreateNewAutomat extends AppCompatActivity {
     private ArrayList<String> getExistAutomats(){
 
         ArrayList<String> listOfAutomats = new ArrayList<>();
-        db = myApp.connectToDB(CreateNewAutomat.this);
-        Cursor cursor = db.query(MyApp.TABLE_MAIN, null, null, null, null, null, null);
+        myApp.connectToDB();
+        Cursor cursor = myApp.readAllData(MyApp.TABLE_MAIN);
 
         if(cursor.moveToFirst()) {
             int numberColumnIndex = cursor.getColumnIndex(MyApp.COLUMN_NUMBER);
@@ -215,16 +213,16 @@ public class CreateNewAutomat extends AppCompatActivity {
     }
 
 
-    private String createTable() {
+    private String getStringCreateTable() {
 
         String table = "Create table automat" + automat.getNumber() + " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, date text, ";
         replaceSpaceInDrinksName();
         for(int i = 0; i < drinksList.size(); i++) {
 
             if(i < (drinksList.size() - 1)) {
-                table = table + "drink" + (i + 1) + " integer, ";
+                table = table + "drink" + i + " integer, ";
             }
-            else table = table + "drink" + (i + 1) + " integer );";
+            else table = table + "drink" + i + " integer );";
         }
         Log.d(MyApp.LOG_TAG, "строка сформированная для создания таблицы " + table);
 

@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Vend Statistics</string>
+    <string name="menu_item_del">Удалить</string>
+    <string name="menu_item_edit">Изменить</string>
+
 </resources>
