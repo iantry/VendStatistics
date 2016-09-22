@@ -11,12 +11,9 @@ import android.widget.ListView;
 
 import ivanov.andrey.vendstatistics.R;
 import ivanov.andrey.vendstatistics.classes.FactoryIntent;
-import ivanov.andrey.vendstatistics.classes.MyApplication;
+import ivanov.andrey.vendstatistics.classes.MyApp;
 
 public class MainActivity extends AppCompatActivity {
-
-    public static final String LOG_TAG = "myLog";
-    private static final int FLAG = 1233217;
 
     Toolbar toolbar;
     FloatingActionButton fabAddAutomat;
@@ -25,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     SimpleCursorAdapter adapter;
     String[] from;
     int[] to;
-    MyApplication myApplication;
+    MyApp myApp;
 
 
     @Override
@@ -42,17 +39,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        cursor = myApplication.readExistAutomats(MainActivity.this);
-        adapter = new SimpleCursorAdapter(MainActivity.this,R.layout.item_automat, cursor, from, to, FLAG);
+        cursor = myApp.readAllData(MyApp.TABLE_MAIN);
+        adapter = new SimpleCursorAdapter(MainActivity.this,R.layout.item_automat, cursor, from, to, MyApp.CURSUR_ADAPTER_FLAG);
         listView.setAdapter(adapter);
-        myApplication.closeConnectToDB();
+        myApp.closeConnectToDB();
     }
 
     private void initVariables() {
 
-        from = new String[] {"name", "number" };
+        from = new String[] { MyApp.COLUMN_NAME, MyApp.COLUMN_NUMBER };
         to = new int[] { R.id.automatName, R.id.automatNumber };
-        myApplication = MyApplication.getfInstance();
+        myApp = MyApp.getfInstance();
     }
 
     private void initView() {
@@ -61,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         fabAddAutomat = (FloatingActionButton) findViewById(R.id.fabAddAutomat);
         listView = (ListView) findViewById(R.id.automatListView);
-
     }
 
     private void setClickListener() {

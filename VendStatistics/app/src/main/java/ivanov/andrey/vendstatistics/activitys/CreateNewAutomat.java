@@ -18,12 +18,10 @@ import ivanov.andrey.vendstatistics.R;
 import ivanov.andrey.vendstatistics.classes.Automat;
 import ivanov.andrey.vendstatistics.classes.Drink;
 import ivanov.andrey.vendstatistics.classes.DrinksAdapter;
-import ivanov.andrey.vendstatistics.classes.MyApplication;
+import ivanov.andrey.vendstatistics.classes.MyApp;
 
 public class CreateNewAutomat extends AppCompatActivity {
 
-
-    public static final String LOG_TAG = "myLog";
 
     Button buttonAdd, buttonSave, buttonRead;
     EditText editTextName, editTextNumber, editTextNameDrink, editTextPrice;
@@ -34,7 +32,7 @@ public class CreateNewAutomat extends AppCompatActivity {
     String drinks, drinksPrice;
     Automat automat;
     SQLiteDatabase db;
-    MyApplication myApplication;
+    MyApp myApp;
 
 
     @Override
@@ -59,7 +57,7 @@ public class CreateNewAutomat extends AppCompatActivity {
 
         drinksList = new ArrayList<>();
         drinks = "";
-        myApplication = MyApplication.getfInstance();
+        myApp = MyApp.getfInstance();
         listOfExistAutomat = getExistAutomats();
     }
 
@@ -146,21 +144,21 @@ public class CreateNewAutomat extends AppCompatActivity {
             }
             else {
 
-                db = myApplication.connectToDB(CreateNewAutomat.this);
+                db = myApp.connectToDB(CreateNewAutomat.this);
 
                 automat = new Automat(name, number);
                 ContentValues contentValues = new ContentValues();
                 prepareDrinksForDB();
-                contentValues.put("name", name);
-                contentValues.put("number", "№ " + number);
-                contentValues.put("drinks", drinks);
-                contentValues.put("drinks_price", drinksPrice);
+                contentValues.put(MyApp.COLUMN_NAME, name);
+                contentValues.put(MyApp.COLUMN_NUMBER, "№ " + number);
+                contentValues.put(MyApp.COLUMN_DRINKS, drinks);
+                contentValues.put(MyApp.COLUMN_DRINKS_PRICE, drinksPrice);
 
-                long rowId = db.insert("listOfAutomats", null, contentValues);
-                Log.d(LOG_TAG, "Автомат добавлен ID = " + rowId);
+                long rowId = db.insert(MyApp.TABLE_MAIN, null, contentValues);
+                Log.d(MyApp.LOG_TAG, "Автомат добавлен ID = " + rowId);
                 db.execSQL(createTable());
                 Toast.makeText(CreateNewAutomat.this, "Автомат добавлен", Toast.LENGTH_SHORT).show();
-                myApplication.closeConnectToDB();
+                myApp.closeConnectToDB();
                 this.finish();
             }
         }
@@ -168,22 +166,22 @@ public class CreateNewAutomat extends AppCompatActivity {
 
     private void readFromDB(){
 
-        db = myApplication.connectToDB(CreateNewAutomat.this);
+        db = myApp.connectToDB(CreateNewAutomat.this);
 
-        Log.d(LOG_TAG, "--- Rows in listOfAutomats: ---");
+        Log.d(MyApp.LOG_TAG, "--- Rows in listOfAutomats: ---");
 
         Cursor c = db.query("listOfAutomats", null, null, null, null, null, null);
 
         if (c.moveToFirst()) {
 
-            int idColIndex = c.getColumnIndex("_id");
-            int nameColIndex = c.getColumnIndex("name");
-            int numberColIndex = c.getColumnIndex("number");
-            int drinksColIndex = c.getColumnIndex("drinks");
-            int drinks_priceColIndex = c.getColumnIndex("drinks_price");
-            Log.d(LOG_TAG, "Данные из БД");
+            int idColIndex = c.getColumnIndex(MyApp.COLUMN_ID);
+            int nameColIndex = c.getColumnIndex(MyApp.COLUMN_NAME);
+            int numberColIndex = c.getColumnIndex(MyApp.COLUMN_NUMBER);
+            int drinksColIndex = c.getColumnIndex(MyApp.COLUMN_DRINKS);
+            int drinks_priceColIndex = c.getColumnIndex(MyApp.COLUMN_DRINKS_PRICE);
+            Log.d(MyApp.LOG_TAG, "Данные из БД");
             do {
-                Log.d(LOG_TAG,
+                Log.d(MyApp.LOG_TAG,
                         "ID = " + c.getInt(idColIndex) +
                                 ", name = " + c.getString(nameColIndex) +
                                 ", number = " + c.getString(numberColIndex) +
@@ -191,32 +189,27 @@ public class CreateNewAutomat extends AppCompatActivity {
                                 ", drinks_price = " + c.getString(drinks_priceColIndex));
             } while (c.moveToNext());
         } else
-            Log.d(LOG_TAG, "0 rows");
+            Log.d(MyApp.LOG_TAG, "0 rows");
 
-        myApplication.closeConnectToDB();
+        myApp.closeConnectToDB();
     }
 
 
     private ArrayList<String> getExistAutomats(){
 
         ArrayList<String> listOfAutomats = new ArrayList<>();
-
-        db = myApplication.connectToDB(CreateNewAutomat.this);
-
-        Cursor cursor = db.query("listOfAutomats", null, null, null, null, null, null);
+        db = myApp.connectToDB(CreateNewAutomat.this);
+        Cursor cursor = db.query(MyApp.TABLE_MAIN, null, null, null, null, null, null);
 
         if(cursor.moveToFirst()) {
-            int numberColumnIndex = cursor.getColumnIndex("number");
-
-            Log.d(MainActivity.LOG_TAG, "--- Список существующих таблиц ---");
+            int numberColumnIndex = cursor.getColumnIndex(MyApp.COLUMN_NUMBER);
+            Log.d(MyApp.LOG_TAG, "--- Список существующих таблиц ---");
             do {
                 listOfAutomats.add(cursor.getString(numberColumnIndex));
-                Log.d(LOG_TAG, "Таблица = " + cursor.getString(numberColumnIndex));
-
+                Log.d(MyApp.LOG_TAG, "Таблица = " + cursor.getString(numberColumnIndex));
             } while (cursor.moveToNext());
         }
-
-        myApplication.closeConnectToDB();
+        myApp.closeConnectToDB();
 
         return listOfAutomats;
     }
@@ -224,10 +217,8 @@ public class CreateNewAutomat extends AppCompatActivity {
 
     private String createTable() {
 
-        String table = "Create table automat" + automat.getNumber() + " ( id INTEGER PRIMARY KEY AUTOINCREMENT, date text, ";
-
+        String table = "Create table automat" + automat.getNumber() + " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, date text, ";
         replaceSpaceInDrinksName();
-
         for(int i = 0; i < drinksList.size(); i++) {
 
             if(i < (drinksList.size() - 1)) {
@@ -235,8 +226,8 @@ public class CreateNewAutomat extends AppCompatActivity {
             }
             else table = table + "drink" + (i + 1) + " integer );";
         }
+        Log.d(MyApp.LOG_TAG, "строка сформированная для создания таблицы " + table);
 
-        Log.d(LOG_TAG, "строка сформированная для создания таблицы " + table);
         return table;
     }
 
@@ -252,7 +243,7 @@ public class CreateNewAutomat extends AppCompatActivity {
 
     private void prepareDrinksForDB() {
 
-        Log.d(LOG_TAG,"сформированные строки");
+        Log.d(MyApp.LOG_TAG,"сформированные строки");
         drinks = drinksList.get(0).getName();
         drinksPrice = drinksList.get(0).getPrice();
 
@@ -261,9 +252,8 @@ public class CreateNewAutomat extends AppCompatActivity {
             drinks = drinks + "|" + drinksList.get(i).getName();
             drinksPrice = drinksPrice + "|" + drinksList.get(i).getPrice();
         }
-
-        Log.d(LOG_TAG, drinks);
-        Log.d(LOG_TAG, drinksPrice);
+        Log.d(MyApp.LOG_TAG, drinks);
+        Log.d(MyApp.LOG_TAG, drinksPrice);
     }
 
 }

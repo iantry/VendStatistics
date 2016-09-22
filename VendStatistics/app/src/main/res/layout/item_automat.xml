@@ -10,7 +10,7 @@
     android:paddingBottom="10dp"
     android:paddingLeft="20dp"
     android:paddingStart="20dp">
-    
+
 
     <TextView
         android:layout_width="match_parent"
@@ -20,9 +20,7 @@
         android:textColor="@color/black_color"
         android:id="@+id/automatName"
         android:layout_weight="1"
-        android:gravity="start"
-
-        />
+        android:gravity="start"/>
 
     <TextView
 
