@@ -3,8 +3,11 @@ package ivanov.andrey.vendstatistics.activitys;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +25,7 @@ import ivanov.andrey.vendstatistics.classes.MyApp;
 public class CreateNewAutomat extends AppCompatActivity {
 
 
-    Button buttonAdd, buttonSave, buttonRead;
+    Button buttonAdd, buttonSave; //buttonRead;
     EditText editTextName, editTextNumber, editTextNameDrink, editTextPrice;
     ListView listViewDrinks;
     DrinksAdapter adapter;
@@ -38,11 +41,27 @@ public class CreateNewAutomat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_automat);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setHomeButtonEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setTitle("Добавление нового автомата");
+
+
+
         initVariables();
         initViews();
         setAdapter();
         setClickListener();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // getMenuInflater().inflate(R.menu.menu_create_new_automat, menu);
+        return true;
     }
 
     private void setAdapter() {
@@ -57,13 +76,16 @@ public class CreateNewAutomat extends AppCompatActivity {
         drinks = "";
         myApp = MyApp.getfInstance();
         listOfExistAutomat = getExistAutomats();
+
     }
 
     private void setClickListener() {
 
         buttonAdd.setOnClickListener(onClickListener);
         buttonSave.setOnClickListener(onClickListener);
-        buttonRead.setOnClickListener(onClickListener);
+
+
+        //buttonRead.setOnClickListener(onClickListener);
     }
 
     private void initViews() {
@@ -76,7 +98,7 @@ public class CreateNewAutomat extends AppCompatActivity {
         editTextPrice = (EditText)findViewById(R.id.editTextPrice);
         listViewDrinks = (ListView)findViewById(R.id.listViewDrinks);
 
-        buttonRead = (Button)findViewById(R.id.buttonRead);
+        // buttonRead = (Button)findViewById(R.id.buttonRead);
 
     }
 
@@ -95,9 +117,6 @@ public class CreateNewAutomat extends AppCompatActivity {
                     else {
                         addAutomat();
                     }
-                    break;
-                case R.id.buttonRead:
-                    readFromDB();
                     break;
             }
         }
@@ -162,35 +181,35 @@ public class CreateNewAutomat extends AppCompatActivity {
         }
     }
 
-    private void readFromDB(){
-
-        myApp.connectToDB();
-
-        Log.d(MyApp.LOG_TAG, "--- Rows in listOfAutomats: ---");
-
-        Cursor c = myApp.readAllData(MyApp.TABLE_MAIN);
-
-        if (c.moveToFirst()) {
-
-            int idColIndex = c.getColumnIndex(MyApp.COLUMN_ID);
-            int nameColIndex = c.getColumnIndex(MyApp.COLUMN_NAME);
-            int numberColIndex = c.getColumnIndex(MyApp.COLUMN_NUMBER);
-            int drinksColIndex = c.getColumnIndex(MyApp.COLUMN_DRINKS);
-            int drinks_priceColIndex = c.getColumnIndex(MyApp.COLUMN_DRINKS_PRICE);
-            Log.d(MyApp.LOG_TAG, "Данные из БД");
-            do {
-                Log.d(MyApp.LOG_TAG,
-                                "  ID = " + c.getInt(idColIndex) +
-                                ", name = " + c.getString(nameColIndex) +
-                                ", number = " + c.getString(numberColIndex) +
-                                ", drinks = " + c.getString(drinksColIndex) +
-                                ", drinks_price = " + c.getString(drinks_priceColIndex));
-            } while (c.moveToNext());
-        } else
-            Log.d(MyApp.LOG_TAG, "0 rows");
-
-        myApp.closeConnectToDB();
-    }
+//    private void readFromDB(){
+//
+//        myApp.connectToDB();
+//
+//        Log.d(MyApp.LOG_TAG, "--- Rows in listOfAutomats: ---");
+//
+//        Cursor c = myApp.readAllData(MyApp.TABLE_MAIN);
+//
+//        if (c.moveToFirst()) {
+//
+//            int idColIndex = c.getColumnIndex(MyApp.COLUMN_ID);
+//            int nameColIndex = c.getColumnIndex(MyApp.COLUMN_NAME);
+//            int numberColIndex = c.getColumnIndex(MyApp.COLUMN_NUMBER);
+//            int drinksColIndex = c.getColumnIndex(MyApp.COLUMN_DRINKS);
+//            int drinks_priceColIndex = c.getColumnIndex(MyApp.COLUMN_DRINKS_PRICE);
+//            Log.d(MyApp.LOG_TAG, "Данные из БД");
+//            do {
+//                Log.d(MyApp.LOG_TAG,
+//                                "  ID = " + c.getInt(idColIndex) +
+//                                ", name = " + c.getString(nameColIndex) +
+//                                ", number = " + c.getString(numberColIndex) +
+//                                ", drinks = " + c.getString(drinksColIndex) +
+//                                ", drinks_price = " + c.getString(drinks_priceColIndex));
+//            } while (c.moveToNext());
+//        } else
+//            Log.d(MyApp.LOG_TAG, "0 rows");
+//
+//        myApp.closeConnectToDB();
+//    }
 
 
     private ArrayList<String> getExistAutomats(){

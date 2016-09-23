@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.item_edit:
-                Toast.makeText(MainActivity.this, info.id + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, info.id + " EDIT", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.item_delete:
                 myApp.connectToDB();

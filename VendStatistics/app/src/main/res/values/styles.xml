@@ -7,4 +7,27 @@
         <item name="android:colorAccent">@color/accent</item>
     </style>
 
+    <style name="ToolBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+
+    <style name="TextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">4sp</item>
+        <item name="android:color">@color/black_color</item>
+    </style>
+
+
+    <style name="ActionBarTitle" parent="android:Widget.TextView">
+
+        <!-- Customizes the color of the action bar title-->
+        <item name="android:textColor">@color/white_color</item>
+
+        <item name="android:textSize">16sp</item>
+
+    </style>
+
 </resources>
