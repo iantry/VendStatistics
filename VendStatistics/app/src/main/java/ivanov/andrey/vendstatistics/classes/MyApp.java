@@ -13,6 +13,7 @@ public class MyApp extends Application {
 
     public static final String LOG_TAG = "myLog";
     public static final int CURSUR_ADAPTER_FLAG = 1233217;
+    public static final String TABLE_NAME = "tableName";
 
     public static final String DATA_BASE_NAME = "vendStatisticsDB";
     public static final int VERSION_DATA_BASE = 1;
@@ -93,6 +94,16 @@ public class MyApp extends Application {
     public void deleteTable(String table) {
 
         db.execSQL("DROP TABLE IF EXISTS " + table);
+    }
+
+    public String getRecord(String table, int position, String colomnName) {
+
+        Cursor c = readAllData(table);
+        c.moveToPosition(position);
+        int numberColumnIndex = c.getColumnIndex(colomnName);
+        String str =  c.getString(numberColumnIndex);
+        return str;
+
     }
 
 

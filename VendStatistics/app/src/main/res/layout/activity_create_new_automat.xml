@@ -6,7 +6,7 @@
     tools:context=".activitys.CreateNewAutomat">
 
     <include layout="@layout/toolbar"
-        android:id="@+id/main_toolbar"/>
+        android:id="@+id/new_automat_toolbar"/>
 
     <!--  <TextView
           android:layout_width="wrap_content"
@@ -21,12 +21,12 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:id="@+id/scroll_view"
-          android:layout_below="@id/main_toolbar">
+          android:layout_below="@id/new_automat_toolbar">
 
 
           <LinearLayout
               android:id="@+id/linerLayout1"
-              android:layout_below="@id/main_toolbar"
+              android:layout_below="@id/new_automat_toolbar"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
@@ -134,7 +134,7 @@
           android:layout_gravity="bottom"
           android:layout_alignParentBottom="true"
           android:layout_margin="5dp"
-          android:text="Сохранить"/>
+          android:text="@string/save"/>
 
 
   </RelativeLayout>

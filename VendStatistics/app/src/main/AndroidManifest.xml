@@ -24,7 +24,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activitys.MainActivity" />
         </activity>
-        <activity android:name=".activitys.AutomatInfo"></activity>
+        <activity
+            android:name=".activitys.AutomatInfo"
+            android:parentActivityName=".activitys.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activitys.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

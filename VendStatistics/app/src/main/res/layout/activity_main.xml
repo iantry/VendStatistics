@@ -6,7 +6,7 @@
     tools:context=".activitys.MainActivity">
 
     <include layout="@layout/toolbar"
-        android:id="@+id/include" />
+        android:id="@+id/main_toolbar" />
 
     <include layout="@layout/floating_action_button"/>
 
@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/automatListView"
-        android:layout_below="@+id/include"
+        android:layout_below="@+id/main_toolbar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/activity_vertical_margin" />

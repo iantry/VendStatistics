@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     String[] from;
     int[] to;
     MyApp myApp;
+    String drinks, drinksPrice;
 
 
     @Override
@@ -36,9 +37,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = (Toolbar)findViewById(R.id.main_toolbar);
+        toolbar.setTitle(R.string.app_name);
         initVariables();
         initView();
         setClickListener();
+
+
     }
 
     @Override
@@ -48,9 +53,23 @@ public class MainActivity extends AppCompatActivity {
         cursor = myApp.readAllData(MyApp.TABLE_MAIN);
         adapter = new SimpleCursorAdapter(MainActivity.this,R.layout.item_automat, cursor, from, to, MyApp.CURSUR_ADAPTER_FLAG);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(itemClickListener);
         myApp.closeConnectToDB();
     }
 
+    AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+            Toast.makeText(getApplicationContext(), "Item Click id - " + id + "\n position - " + position, Toast.LENGTH_LONG).show();
+
+            myApp.connectToDB();
+            drinks = myApp.getRecord(MyApp.TABLE_MAIN, position, MyApp.COLUMN_DRINKS);
+            drinksPrice = myApp.getRecord(MyApp.TABLE_MAIN, position, MyApp.COLUMN_DRINKS_PRICE);
+            myApp.closeConnectToDB();
+            FactoryIntent.openAutomatInfoActivity(MainActivity.this, getTableName(itemClicked), drinks, drinksPrice);
+
+        }
+    };
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {

@@ -41,13 +41,11 @@ public class CreateNewAutomat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_automat);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.new_automat_toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle("Добавление нового автомата");
-
 
 
         initVariables();
@@ -235,7 +233,6 @@ public class CreateNewAutomat extends AppCompatActivity {
     private String getStringCreateTable() {
 
         String table = "Create table automat" + automat.getNumber() + " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, date text, ";
-        replaceSpaceInDrinksName();
         for(int i = 0; i < drinksList.size(); i++) {
 
             if(i < (drinksList.size() - 1)) {
@@ -248,17 +245,18 @@ public class CreateNewAutomat extends AppCompatActivity {
         return table;
     }
 
-    void replaceSpaceInDrinksName() {
-
-        Drink dr;
-        for(int i = 0; i < drinksList.size(); i++){
-            dr = drinksList.get(i);
-            dr.setName(dr.getName().replace(" ", "_"));
-            drinksList.set(i, dr);
-        }
-    }
+//    void replaceSpaceInDrinksName() {
+//
+//        Drink dr;
+//        for(int i = 0; i < drinksList.size(); i++){
+//            dr = drinksList.get(i);
+//            dr.setName(dr.getName().replace(" ", "_"));
+//            drinksList.set(i, dr);
+//        }
+//    }
 
     private void prepareDrinksForDB() {
+
 
         Log.d(MyApp.LOG_TAG,"сформированные строки");
         drinks = drinksList.get(0).getName();
@@ -266,8 +264,8 @@ public class CreateNewAutomat extends AppCompatActivity {
 
         for(int i = 1; i < drinksList.size(); i++) {
 
-            drinks = drinks + "|" + drinksList.get(i).getName();
-            drinksPrice = drinksPrice + "|" + drinksList.get(i).getPrice();
+            drinks = drinks + this.getResources().getString(R.string.separator) + drinksList.get(i).getName();
+            drinksPrice = drinksPrice + this.getResources().getString(R.string.separator) + drinksList.get(i).getPrice();
         }
         Log.d(MyApp.LOG_TAG, drinks);
         Log.d(MyApp.LOG_TAG, drinksPrice);

@@ -5,15 +5,28 @@
     android:layout_height="match_parent"
     tools:context="ivanov.andrey.vendstatistics.activitys.AutomatInfo">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar"
+        android:id="@+id/automat_info_toolbar"/>
 
-    <TextView
-        android:layout_marginTop="5dp"
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Напитки автомата:"
-        android:textSize="16sp"
-        android:textColor="@color/white_color"/>
+        android:id="@+id/listViewAddData"
+        android:layout_below="@+id/automat_info_toolbar"
+        android:layout_above="@+id/buttonSaveData"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"/>
+
+    <Button
+        android:layout_marginTop="5dp"
+        android:id="@+id/buttonSaveData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
+        android:text="@string/save"/>
 
 
 </RelativeLayout>

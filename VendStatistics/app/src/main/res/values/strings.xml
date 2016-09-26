@@ -3,5 +3,9 @@
     <string name="menu_item_del">Удалить</string>
     <string name="menu_item_edit">Изменить</string>
     <string name="empty"> </string>
+    <string name="save">Сохранить</string>
+    <string name="data_add">Ввод данных</string>
+    <string name="valuta">₽</string>
+    <string name="separator">_@_</string>
 
 </resources>

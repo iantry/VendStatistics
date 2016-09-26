@@ -42,7 +42,8 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
         }
 
         ((TextView) convertView.findViewById(R.id.text1)).setText(drink.getName());
-        ((TextView) convertView.findViewById(R.id.text2)).setText(drink.getPrice());
+        String price = drink.getPrice() + " " + context.getResources().getString(R.string.valuta);
+        ((TextView) convertView.findViewById(R.id.text2)).setText(price);
 
         return convertView;
     }
