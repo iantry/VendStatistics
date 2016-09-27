@@ -34,6 +34,7 @@ public class MyApp extends Application {
 
 
     private static MyApp fInstance;
+    private
     DataBaseHelper dbHelper;
     SQLiteDatabase db;
 

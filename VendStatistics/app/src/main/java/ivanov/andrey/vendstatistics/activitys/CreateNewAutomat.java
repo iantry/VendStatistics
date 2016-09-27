@@ -64,7 +64,7 @@ public class CreateNewAutomat extends AppCompatActivity {
 
     private void setAdapter() {
 
-        adapter = new DrinksAdapter(this, drinksList);
+        adapter = new DrinksAdapter(this, drinksList, R.layout.item_drink);
         listViewDrinks.setAdapter(adapter);
     }
 

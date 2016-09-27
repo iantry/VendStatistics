@@ -1,15 +1,13 @@
 package ivanov.andrey.vendstatistics.activitys;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.ArrayAdapter;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
 
@@ -23,12 +21,13 @@ public class AutomatInfo extends AppCompatActivity {
     Button buttonSaveData;
     ListView listView;
     MyApp myApp;
-    Cursor cursor;
     String tableName;
     String drinks, drinksPrice;
     ArrayList<Drink> drinksList;
     DrinksAdapter adapter;
     Intent intent;
+   public ArrayList<String> pieces;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +51,26 @@ public class AutomatInfo extends AppCompatActivity {
         //  myApp.connectToDB();
         // cursor = myApp.readAllData(MyApp.TABLE_MAIN);
 
-        adapter = new DrinksAdapter(AutomatInfo.this, drinksList);    //(AutomatInfo.this, R.layout.item_statistics, , from, to, MyApp.CURSUR_ADAPTER_FLAG);
+        adapter = new DrinksAdapter(AutomatInfo.this, drinksList , R.layout.item_statistics);    //(AutomatInfo.this, R.layout.item_statistics, , from, to, MyApp.CURSUR_ADAPTER_FLAG);
         listView.setAdapter(adapter);
+        Drink dr_name = (Drink) listView.getItemAtPosition(0);
+       // adapter.getView(0, R.layout.item_statistics,
+        Log.d(MyApp.LOG_TAG, "ИМЯ ПЕРВОГО НАПИТКА  - " + dr_name.getName());
         //listView.setOnItemClickListener(itemClickListener);
         //  myApp.closeConnectToDB();
     }
 
 
     private void initVariables() {
+
         myApp = MyApp.getfInstance();
         intent = getIntent();
         tableName = intent.getStringExtra(MyApp.TABLE_NAME);
         drinks = intent.getStringExtra(MyApp.COLUMN_DRINKS);
         drinksPrice = intent.getStringExtra(MyApp.COLUMN_DRINKS_PRICE);
         drinksList = getDrinksList();
+        pieces = new ArrayList<>();
+
     }
 
     private ArrayList<Drink> getDrinksList() {
@@ -88,5 +93,12 @@ public class AutomatInfo extends AppCompatActivity {
         buttonSaveData = (Button)findViewById(R.id.buttonSaveData);
         listView = (ListView) findViewById(R.id.listViewAddData);
     }
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
 
 }
