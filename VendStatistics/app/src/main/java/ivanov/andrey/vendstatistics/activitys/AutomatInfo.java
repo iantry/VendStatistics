@@ -6,8 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -26,7 +30,8 @@ public class AutomatInfo extends AppCompatActivity {
     ArrayList<Drink> drinksList;
     DrinksAdapter adapter;
     Intent intent;
-   public ArrayList<String> pieces;
+    public int[] piecesOfDrink;
+
 
 
     @Override
@@ -42,22 +47,25 @@ public class AutomatInfo extends AppCompatActivity {
         initVariables();
         initViews();
 
-    }
 
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //  myApp.connectToDB();
-        // cursor = myApp.readAllData(MyApp.TABLE_MAIN);
+
 
         adapter = new DrinksAdapter(AutomatInfo.this, drinksList , R.layout.item_statistics);    //(AutomatInfo.this, R.layout.item_statistics, , from, to, MyApp.CURSUR_ADAPTER_FLAG);
         listView.setAdapter(adapter);
-        Drink dr_name = (Drink) listView.getItemAtPosition(0);
-       // adapter.getView(0, R.layout.item_statistics,
-        Log.d(MyApp.LOG_TAG, "ИМЯ ПЕРВОГО НАПИТКА  - " + dr_name.getName());
-        //listView.setOnItemClickListener(itemClickListener);
-        //  myApp.closeConnectToDB();
+
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        ViewGroup viewGroup = linearLayout;
+        View view = adapter.getView(0, null, viewGroup);
+        TextView editText = (TextView) view.findViewById(R.id.text1);
+        String drinkName = editText.getText().toString();
+        Log.d(MyApp.LOG_TAG, "ИМЯ ПЕРВОГО НАПИТКА  - " + drinkName);
+
     }
 
 
@@ -69,7 +77,7 @@ public class AutomatInfo extends AppCompatActivity {
         drinks = intent.getStringExtra(MyApp.COLUMN_DRINKS);
         drinksPrice = intent.getStringExtra(MyApp.COLUMN_DRINKS_PRICE);
         drinksList = getDrinksList();
-        pieces = new ArrayList<>();
+        piecesOfDrink = new int[drinksList.size()];
 
     }
 
@@ -91,6 +99,7 @@ public class AutomatInfo extends AppCompatActivity {
     private void initViews() {
 
         buttonSaveData = (Button)findViewById(R.id.buttonSaveData);
+        buttonSaveData.setOnClickListener(onClickListener);
         listView = (ListView) findViewById(R.id.listViewAddData);
     }
 
@@ -98,6 +107,21 @@ public class AutomatInfo extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
+            View view;
+            for (int i = 0; i < drinksList.size(); i++) {
+                view = listView.getChildAt(i);
+                EditText editTexPieces = (EditText) view.findViewById(R.id.pieces);
+
+                if (!editTexPieces.getText().toString().isEmpty()) {
+                    piecesOfDrink[i] = Integer.parseInt(editTexPieces.getText().toString());
+
+                    Log.d(MyApp.LOG_TAG, "Колличетсво " + i + " напитка = " +  piecesOfDrink[i]);
+                }
+                else {
+                    piecesOfDrink[i] = 0;
+                    Log.d(MyApp.LOG_TAG, "Пустое значение");
+                }
+            }
         }
     };
 

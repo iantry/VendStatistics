@@ -1,7 +1,6 @@
 package ivanov.andrey.vendstatistics.classes;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,7 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
     LayoutInflater layoutInflater;
     int item;
     AutomatInfo automatInfo;
+    Boolean endTextChanged = true;
 
     public DrinksAdapter(Context context, ArrayList<Drink> drinks, int item) {
         super(context, item, drinks);
@@ -43,30 +43,28 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
 
         Drink drink = drinks.get(position);
 
-        if(convertView == null){
+        if (convertView == null) {
 
             convertView = layoutInflater.inflate(item, parent, false);
         }
 
-        TextView textNameDrink = (TextView) convertView.findViewById(R.id.text1);
-        TextView textPriceDrink = (TextView) convertView.findViewById(R.id.text2);
-        if(convertView.findViewById(R.id.pieces) != null) {
-            final EditText editTextPieces = (EditText) convertView.findViewById(R.id.pieces);
+        TextView textNameDrink;
+        TextView textPriceDrink;
 
-            View.OnFocusChangeListener focusChangeListener = new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        automatInfo.pieces.add(position, editTextPieces.getText().toString());
-                        Log.d(MyApp.LOG_TAG, "Данные добавленные в список по позиции - " + position + " = " + automatInfo.pieces.get(position));
-                       // Toast.makeText(context, "Потерян фокус у позиции - " + position, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            };
-
-            editTextPieces.setOnFocusChangeListener(focusChangeListener);
+        if(item == R.layout.item_statistics) {
+            textNameDrink = (TextView) convertView.findViewById(R.id.text1);
+            textPriceDrink = (TextView) convertView.findViewById(R.id.text2);
         }
+        else {
 
+            textNameDrink = (TextView) convertView.findViewById(R.id.textName);
+            textPriceDrink = (TextView) convertView.findViewById(R.id.textPrice);
+        }
+        if (convertView.findViewById(R.id.pieces) != null) {
+            final EditText editTextPieces = (EditText) convertView.findViewById(R.id.pieces);
+            editTextPieces.setTag(position);
+
+        }
 
         textNameDrink.setText(drink.getName());
         String price = drink.getPrice() + " " + context.getResources().getString(R.string.valuta);
@@ -74,4 +72,5 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
 
         return convertView;
     }
+
 }

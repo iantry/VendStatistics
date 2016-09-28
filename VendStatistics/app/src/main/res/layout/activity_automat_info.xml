@@ -26,6 +26,7 @@
         android:layout_gravity="bottom"
         android:layout_alignParentBottom="true"
         android:layout_margin="5dp"
+        android:focusable="true"
         android:text="@string/save"/>
 
 
