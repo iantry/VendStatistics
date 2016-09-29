@@ -23,7 +23,7 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
     ArrayList<Drink> drinks;
     LayoutInflater layoutInflater;
     int item;
-    AutomatInfo automatInfo;
+   // AutomatInfo automatInfo;
     Boolean endTextChanged = true;
 
     public DrinksAdapter(Context context, ArrayList<Drink> drinks, int item) {
@@ -32,7 +32,6 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
         this.context = context;
         this.drinks = drinks;
         this.item = item;
-        automatInfo = (AutomatInfo)context;
 
         layoutInflater  = LayoutInflater.from(context);
 
@@ -48,19 +47,12 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
             convertView = layoutInflater.inflate(item, parent, false);
         }
 
-        TextView textNameDrink;
-        TextView textPriceDrink;
+        TextView textNameDrink = (TextView) convertView.findViewById(R.id.text1);
+        TextView textPriceDrink = (TextView) convertView.findViewById(R.id.text2);
 
-        if(item == R.layout.item_statistics) {
-            textNameDrink = (TextView) convertView.findViewById(R.id.text1);
-            textPriceDrink = (TextView) convertView.findViewById(R.id.text2);
-        }
-        else {
-
-            textNameDrink = (TextView) convertView.findViewById(R.id.textName);
-            textPriceDrink = (TextView) convertView.findViewById(R.id.textPrice);
-        }
         if (convertView.findViewById(R.id.pieces) != null) {
+
+            //automatInfo = (AutomatInfo)context;
             final EditText editTextPieces = (EditText) convertView.findViewById(R.id.pieces);
             editTextPieces.setTag(position);
 
