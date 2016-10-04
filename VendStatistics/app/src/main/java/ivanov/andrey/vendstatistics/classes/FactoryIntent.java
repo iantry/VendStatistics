@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import ivanov.andrey.vendstatistics.activitys.AutomatInfo;
 import ivanov.andrey.vendstatistics.activitys.CreateNewAutomat;
+import ivanov.andrey.vendstatistics.activitys.ListOfStatistics;
+import ivanov.andrey.vendstatistics.activitys.StatisticsByDate;
 
 /**
  * Created by Andrey on 17.09.2016.
@@ -18,12 +20,25 @@ public class FactoryIntent {
     }
 
 
-    public static void openAutomatInfoActivity(Context context, String tableName, String drinks, String drinks_price) {
+    public static void openAutomatInfoActivity(Context context) {
 
         Intent intent = new Intent(context, AutomatInfo.class);
-        intent.putExtra(MyApp.TABLE_NAME, tableName);
-        intent.putExtra(MyApp.COLUMN_DRINKS, drinks);
-        intent.putExtra(MyApp.COLUMN_DRINKS_PRICE, drinks_price);
+
+        context.startActivity(intent);
+    }
+
+    public static void openListOfStatistics(Context context) {
+
+        Intent intent = new Intent(context, ListOfStatistics.class);
+
+        context.startActivity(intent);
+    }
+
+
+    public static void openStatisticsByDate(Context context, int position) {
+
+        Intent intent = new Intent(context, StatisticsByDate.class);
+        intent.putExtra("position", position);
 
         context.startActivity(intent);
     }

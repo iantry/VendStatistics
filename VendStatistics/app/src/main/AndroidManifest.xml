@@ -31,6 +31,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activitys.MainActivity" />
         </activity>
+        <activity android:name=".activitys.ListOfStatistics" />
+        <activity android:name=".activitys.StatisticsByDate"></activity>
     </application>
 
 </manifest>

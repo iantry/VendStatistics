@@ -8,5 +8,6 @@
     <string name="valuta">₽</string>
     <string name="separator">_@_</string>
     <string name="pieces">шт.</string>
+    <string name="statistics">Статистика</string>
 
 </resources>

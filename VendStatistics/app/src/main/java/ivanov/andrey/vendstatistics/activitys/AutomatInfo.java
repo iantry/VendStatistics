@@ -1,23 +1,24 @@
 package ivanov.andrey.vendstatistics.activitys;
 
-import android.content.Intent;
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import ivanov.andrey.vendstatistics.R;
 import ivanov.andrey.vendstatistics.classes.Drink;
 import ivanov.andrey.vendstatistics.classes.DrinksAdapter;
+import ivanov.andrey.vendstatistics.classes.FactoryIntent;
 import ivanov.andrey.vendstatistics.classes.MyApp;
 
 public class AutomatInfo extends AppCompatActivity {
@@ -26,13 +27,9 @@ public class AutomatInfo extends AppCompatActivity {
     ListView listView;
     MyApp myApp;
     String tableName;
-    String drinks, drinksPrice;
     ArrayList<Drink> drinksList;
     DrinksAdapter adapter;
-    Intent intent;
     public int[] piecesOfDrink;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,53 +43,36 @@ public class AutomatInfo extends AppCompatActivity {
 
         initVariables();
         initViews();
-
-
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
 
-
-        adapter = new DrinksAdapter(AutomatInfo.this, drinksList , R.layout.item_statistics);    //(AutomatInfo.this, R.layout.item_statistics, , from, to, MyApp.CURSUR_ADAPTER_FLAG);
+        adapter = new DrinksAdapter(AutomatInfo.this, drinksList , R.layout.item_statistics, null);
         listView.setAdapter(adapter);
-
-
-        LinearLayout linearLayout = new LinearLayout(this);
-        ViewGroup viewGroup = linearLayout;
-        View view = adapter.getView(0, null, viewGroup);
-        TextView editText = (TextView) view.findViewById(R.id.text1);
-        String drinkName = editText.getText().toString();
-        Log.d(MyApp.LOG_TAG, "ИМЯ ПЕРВОГО НАПИТКА  - " + drinkName);
-
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_automat_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        FactoryIntent.openListOfStatistics(AutomatInfo.this);
+
+        return true;
+    }
 
     private void initVariables() {
 
         myApp = MyApp.getfInstance();
-        intent = getIntent();
-        tableName = intent.getStringExtra(MyApp.TABLE_NAME);
-        drinks = intent.getStringExtra(MyApp.COLUMN_DRINKS);
-        drinksPrice = intent.getStringExtra(MyApp.COLUMN_DRINKS_PRICE);
-        drinksList = getDrinksList();
+        tableName = myApp.getTableName();
+        drinksList = myApp.getDrinksList();
         piecesOfDrink = new int[drinksList.size()];
-
-    }
-
-    private ArrayList<Drink> getDrinksList() {
-
-        ArrayList<Drink> drL = new ArrayList<>();
-        String separator = this.getResources().getString(R.string.separator);
-        String  dr[] = drinks.split(separator);
-        String  drPr[] = drinksPrice.split(separator);
-
-        for(int i = 0; i < dr.length; i++){
-
-            drL.add(new Drink(dr[i], drPr[i]));
-        }
-        return drL;
 
     }
 
@@ -107,6 +87,16 @@ public class AutomatInfo extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
+            String day, month, year, date;
+            Calendar calendar = Calendar.getInstance();
+            day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+            month = String.valueOf(1 + calendar.get(Calendar.MONTH));
+            year = String.valueOf(calendar.get(Calendar.YEAR));
+            date = day + "." + month + "." + year;
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MyApp.COLUMN_DATE, date);
+
             View view;
             for (int i = 0; i < drinksList.size(); i++) {
                 view = listView.getChildAt(i);
@@ -114,14 +104,18 @@ public class AutomatInfo extends AppCompatActivity {
 
                 if (!editTexPieces.getText().toString().isEmpty()) {
                     piecesOfDrink[i] = Integer.parseInt(editTexPieces.getText().toString());
-
+                    contentValues.put(MyApp.COLUMN_DRINK + i, piecesOfDrink[i]);
                     Log.d(MyApp.LOG_TAG, "Колличетсво " + i + " напитка = " +  piecesOfDrink[i]);
                 }
                 else {
                     piecesOfDrink[i] = 0;
+                    contentValues.put(MyApp.COLUMN_DRINK + i, piecesOfDrink[i]);
                     Log.d(MyApp.LOG_TAG, "Пустое значение");
                 }
             }
+            myApp.connectToDB();
+            myApp.insertToTable(tableName, contentValues);
+            myApp.closeConnectToDB();
         }
     };
 

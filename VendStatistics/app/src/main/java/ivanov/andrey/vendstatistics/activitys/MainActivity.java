@@ -43,12 +43,11 @@ public class MainActivity extends AppCompatActivity {
         initView();
         setClickListener();
 
-
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         myApp.connectToDB();
         cursor = myApp.readAllData(MyApp.TABLE_MAIN);
         adapter = new SimpleCursorAdapter(MainActivity.this,R.layout.item_automat, cursor, from, to, MyApp.CURSUR_ADAPTER_FLAG);
@@ -63,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Item Click id - " + id + "\n position - " + position, Toast.LENGTH_LONG).show();
 
             myApp.connectToDB();
-            drinks = myApp.getRecord(MyApp.TABLE_MAIN, position, MyApp.COLUMN_DRINKS);
-            drinksPrice = myApp.getRecord(MyApp.TABLE_MAIN, position, MyApp.COLUMN_DRINKS_PRICE);
+            myApp.setDrinksList(position); // передается позиция для получения листа
+            myApp.setTableName(itemClicked); // передается View для установки имени таблицы с которой мы будем работать
             myApp.closeConnectToDB();
-            FactoryIntent.openAutomatInfoActivity(MainActivity.this, getTableName(itemClicked), drinks, drinksPrice);
+            FactoryIntent.openAutomatInfoActivity(MainActivity.this);
 
         }
     };

@@ -11,7 +11,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ivanov.andrey.vendstatistics.R;
-import ivanov.andrey.vendstatistics.activitys.AutomatInfo;
 
 
 /**
@@ -23,15 +22,15 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
     ArrayList<Drink> drinks;
     LayoutInflater layoutInflater;
     int item;
-   // AutomatInfo automatInfo;
-    Boolean endTextChanged = true;
+    String[] piecesOfDrinks;
 
-    public DrinksAdapter(Context context, ArrayList<Drink> drinks, int item) {
+    public DrinksAdapter(Context context, ArrayList<Drink> drinks, int item, String[] piecesOfDrinks) {
         super(context, item, drinks);
 
         this.context = context;
         this.drinks = drinks;
         this.item = item;
+        this.piecesOfDrinks = piecesOfDrinks;
 
         layoutInflater  = LayoutInflater.from(context);
 
@@ -51,11 +50,14 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
         TextView textPriceDrink = (TextView) convertView.findViewById(R.id.text2);
 
         if (convertView.findViewById(R.id.pieces) != null) {
-
-            //automatInfo = (AutomatInfo)context;
-            final EditText editTextPieces = (EditText) convertView.findViewById(R.id.pieces);
+            EditText editTextPieces = (EditText) convertView.findViewById(R.id.pieces);
             editTextPieces.setTag(position);
+        }
 
+        if (piecesOfDrinks != null) {
+
+            TextView textPieces = (TextView)convertView.findViewById(R.id.textViewPieces);
+            textPieces.setText(piecesOfDrinks[position]);
         }
 
         textNameDrink.setText(drink.getName());
