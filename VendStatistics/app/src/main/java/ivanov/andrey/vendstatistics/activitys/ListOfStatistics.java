@@ -3,6 +3,7 @@ package ivanov.andrey.vendstatistics.activitys;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -28,10 +29,12 @@ public class ListOfStatistics extends AppCompatActivity {
         setContentView(R.layout.activity_list_of_statistics);
         Toolbar toolbar = (Toolbar)findViewById(R.id.automat_info_toolbar);
         setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        setTitle(getString(R.string.dateForThe));
+        ab.setDisplayHomeAsUpEnabled(true);
         initVariables();
         initViews();
     }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -43,16 +46,15 @@ public class ListOfStatistics extends AppCompatActivity {
         myApp.closeConnectToDB();
 
     }
-
     AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            FactoryIntent.openStatisticsByDate(ListOfStatistics.this, position);
+            myApp.setPosition(position);
+            FactoryIntent.openStatisticsByDate(ListOfStatistics.this);
 
         }
     };
-
     private void initVariables() {
 
         myApp = MyApp.getfInstance();
@@ -61,7 +63,6 @@ public class ListOfStatistics extends AppCompatActivity {
         to = new int[] { android.R.id.text1 };
 
     }
-
     private void initViews() {
 
         listViewStatisticsDate = (ListView)findViewById(R.id.listViewStatisticsDate);

@@ -57,11 +57,12 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
         if (piecesOfDrinks != null) {
 
             TextView textPieces = (TextView)convertView.findViewById(R.id.textViewPieces);
-            textPieces.setText(piecesOfDrinks[position]);
+            String text = piecesOfDrinks[position] + " " + context.getString(R.string.pcs);
+            textPieces.setText(text);
         }
 
         textNameDrink.setText(drink.getName());
-        String price = drink.getPrice() + " " + context.getResources().getString(R.string.valuta);
+        String price = drink.getPrice() + " " + context.getString(R.string.valuta);
         textPriceDrink.setText(price);
 
         return convertView;

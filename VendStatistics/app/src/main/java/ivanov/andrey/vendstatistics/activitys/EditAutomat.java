@@ -25,7 +25,7 @@ import ivanov.andrey.vendstatistics.classes.Drink;
 import ivanov.andrey.vendstatistics.classes.DrinksAdapter;
 import ivanov.andrey.vendstatistics.classes.MyApp;
 
-public class CreateNewAutomat extends AppCompatActivity {
+public class EditAutomat extends AppCompatActivity {
 
 
     Button buttonAdd, buttonSave;
@@ -41,7 +41,6 @@ public class CreateNewAutomat extends AppCompatActivity {
     int index;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,14 +50,14 @@ public class CreateNewAutomat extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.addNewAutomat);
+        ab.setTitle(R.string.editAutomat);
+
         initVariables();
         initViews();
         setAdapter();
         setClickListener();
 
     }
-
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -74,7 +73,7 @@ public class CreateNewAutomat extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.item_edit:
-                Toast.makeText(CreateNewAutomat.this, "Edit - " + info.id, Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditAutomat.this, "Edit - " + info.id, Toast.LENGTH_SHORT).show();
                 index = info.position;
                 isEdit = true;
                 editTextNameDrink.setText(drinksList.get(index).getName());
@@ -84,7 +83,7 @@ public class CreateNewAutomat extends AppCompatActivity {
 
                 return true;
             case R.id.item_delete:
-                Toast.makeText(CreateNewAutomat.this, "Delete - " + info.id, Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditAutomat.this, "Delete - " + info.id, Toast.LENGTH_SHORT).show();
                 drinksList.remove(info.position);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -102,10 +101,11 @@ public class CreateNewAutomat extends AppCompatActivity {
 
     private void initVariables() {
 
-        drinksList = new ArrayList<>();
         drinks = "";
         myApp = MyApp.getfInstance();
         listOfExistAutomat = getExistAutomats();
+        drinksList = new ArrayList<>();
+        drinksList = myApp.getDrinksList();
         isEdit = false;
         index = -1;
     }
@@ -120,27 +120,32 @@ public class CreateNewAutomat extends AppCompatActivity {
 
         buttonAdd = (Button)findViewById(R.id.buttonAdd);
         buttonSave = (Button)findViewById(R.id.buttonSave);
-        editTextName = (EditText)findViewById(R.id.editTextName);
-        editTextNumber = (EditText)findViewById(R.id.editTextNumber);
         editTextNameDrink = (EditText)findViewById(R.id.editTextNameDrink);
         editTextPrice = (EditText)findViewById(R.id.editTextPrice);
         listViewDrinks = (ListView)findViewById(R.id.listViewDrinks);
         registerForContextMenu(listViewDrinks);
 
+
+        editTextName = (EditText)findViewById(R.id.editTextName);
+        editTextNumber = (EditText)findViewById(R.id.editTextNumber);
+        myApp.connectToDB();
+        editTextName.setText(myApp.getRecord(MyApp.TABLE_MAIN, myApp.getPosition(), MyApp.COLUMN_NAME));
+        editTextNumber.setText(myApp.getRecord(MyApp.TABLE_MAIN, myApp.getPosition(), MyApp.COLUMN_NUMBER));
+        myApp.closeConnectToDB();
+
     }
+
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.buttonAdd:
                     addDrink();
                     break;
                 case R.id.buttonSave:
-                    if(drinksList.isEmpty()){
-                        Toast.makeText(CreateNewAutomat.this, "Вы не добавили ни одного напитка", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    if (drinksList.isEmpty()) {
+                        Toast.makeText(EditAutomat.this, "Вы не добавили ни одного напитка", Toast.LENGTH_SHORT).show();
                         addAutomat();
                     }
                     break;
@@ -154,10 +159,10 @@ public class CreateNewAutomat extends AppCompatActivity {
         String name = editTextNameDrink.getText().toString().trim();
         String price = editTextPrice.getText().toString().trim();
         if(name.isEmpty()) {
-            Toast.makeText(CreateNewAutomat.this, "Вы не ввели название напитка", Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditAutomat.this, "Вы не ввели название напитка", Toast.LENGTH_SHORT).show();
         }
         else if (price.isEmpty()) {
-            Toast.makeText(CreateNewAutomat.this, "Вы не ввели цену напитка", Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditAutomat.this, "Вы не ввели цену напитка", Toast.LENGTH_SHORT).show();
         }
         else {
             Drink drink = new Drink(name, price);
@@ -169,6 +174,26 @@ public class CreateNewAutomat extends AppCompatActivity {
             index = -1;
             isEdit = false;
         }
+    }
+
+    private void editAutomat() {
+
+        String name = editTextName.getText().toString().trim();
+        String number =  editTextNumber.getText().toString().trim();
+
+        if(name.isEmpty()) {
+            Toast.makeText(EditAutomat.this, "Вы не ввели название автомата", Toast.LENGTH_SHORT).show();
+        }
+        else if(number.isEmpty()){
+            Toast.makeText(EditAutomat.this, "Вы не ввели номер автомата", Toast.LENGTH_SHORT).show();
+        }
+        else {
+
+            if (listOfExistAutomat.contains("№ " + number)) {
+
+                Toast.makeText(EditAutomat.this, "Автомат с таким номером уже существует", Toast.LENGTH_SHORT).show();
+            }
+        }
 
     }
 
@@ -178,16 +203,16 @@ public class CreateNewAutomat extends AppCompatActivity {
         String number =  editTextNumber.getText().toString().trim();
 
         if(name.isEmpty()) {
-            Toast.makeText(CreateNewAutomat.this, "Вы не ввели название автомата", Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditAutomat.this, "Вы не ввели название автомата", Toast.LENGTH_SHORT).show();
         }
         else if(number.isEmpty()){
-            Toast.makeText(CreateNewAutomat.this, "Вы не ввели номер автомата", Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditAutomat.this, "Вы не ввели номер автомата", Toast.LENGTH_SHORT).show();
         }
         else {
 
             if(listOfExistAutomat.contains("№ " + number)) {
 
-                Toast.makeText(CreateNewAutomat.this, "Автомат с таким номером уже существует", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditAutomat.this, "Автомат с таким номером уже существует", Toast.LENGTH_SHORT).show();
             }
             else {
 
@@ -204,7 +229,7 @@ public class CreateNewAutomat extends AppCompatActivity {
                 long rowId = myApp.insertToTable(MyApp.TABLE_MAIN, contentValues);
                 Log.d(MyApp.LOG_TAG, "Автомат добавлен ID = " + rowId);
                 myApp.createTable(getStringCreateTable());
-                Toast.makeText(CreateNewAutomat.this, "Автомат добавлен", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditAutomat.this, "Автомат добавлен", Toast.LENGTH_SHORT).show();
                 myApp.closeConnectToDB();
                 this.finish();
             }
@@ -257,8 +282,8 @@ public class CreateNewAutomat extends AppCompatActivity {
 
         for(int i = 1; i < drinksList.size(); i++) {
 
-            drinks = drinks + this.getResources().getString(R.string.separator) + drinksList.get(i).getName();
-            drinksPrice = drinksPrice + this.getResources().getString(R.string.separator) + drinksList.get(i).getPrice();
+            drinks = drinks + this.getString(R.string.separator) + drinksList.get(i).getName();
+            drinksPrice = drinksPrice + this.getString(R.string.separator) + drinksList.get(i).getPrice();
         }
         Log.d(MyApp.LOG_TAG, drinks);
         Log.d(MyApp.LOG_TAG, drinksPrice);

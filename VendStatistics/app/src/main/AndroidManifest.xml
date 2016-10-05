@@ -31,8 +31,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activitys.MainActivity" />
         </activity>
-        <activity android:name=".activitys.ListOfStatistics" />
-        <activity android:name=".activitys.StatisticsByDate"></activity>
+        <activity
+            android:name=".activitys.ListOfStatistics"
+            android:parentActivityName=".activitys.AutomatInfo">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activitys.AutomatInfo" />
+        </activity>
+        <activity
+            android:name=".activitys.StatisticsByDate"
+            android:parentActivityName=".activitys.ListOfStatistics">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activitys.ListOfStatistics" />
+        </activity>
+        <activity android:name=".activitys.EditAutomat"></activity>
     </application>
 
 </manifest>

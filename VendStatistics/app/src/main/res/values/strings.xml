@@ -9,5 +9,10 @@
     <string name="separator">_@_</string>
     <string name="pieces">шт.</string>
     <string name="statistics">Статистика</string>
+    <string name="pcs">шт.</string>
+    <string name="dataOn">"Данные на - "</string>
+    <string name="dateForThe">Данные за:</string>
+    <string name="addNewAutomat">Добавление нового автомата</string>
+    <string name="editAutomat">Изменение автомата</string>
 
 </resources>

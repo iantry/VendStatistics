@@ -3,7 +3,9 @@ package ivanov.andrey.vendstatistics.activitys;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -23,14 +25,21 @@ public class StatisticsByDate extends AppCompatActivity {
     DrinksAdapter adapter;
     ArrayList<Drink> drinkList;
     String[] piecesOfDrinks;
+    String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics_by_date);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.automat_info_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
 
         initVariables();
         initView();
+        ab.setTitle(getString(R.string.dataOn) + date);
+
     }
 
     @Override
@@ -45,10 +54,11 @@ public class StatisticsByDate extends AppCompatActivity {
 
         myApp = MyApp.getfInstance();
         intent = getIntent();
+        position = myApp.getPosition();
         tableName = myApp.getTableName();
-        position = intent.getIntExtra("position", -1);
         drinkList = myApp.getDrinksList();
         piecesOfDrinks = getPiecesOfDrinks();
+        date = myApp.getRecord(tableName, position, MyApp.COLUMN_DATE);
     }
 
     private String[] getPiecesOfDrinks() {

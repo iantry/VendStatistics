@@ -38,7 +38,9 @@ public class MyApp extends Application {
             + COLUMN_DRINKS_PRICE + " text );";
 
     public static final String COLUMN_DATE = "date";
-    public static final String COLUMN_DRINK ="drink";
+    public static final String COLUMN_DRINK = "drink";
+    public static final String ID = "id";
+
 
 
 
@@ -47,7 +49,8 @@ public class MyApp extends Application {
     SQLiteDatabase db;
     private ArrayList<Drink> drinksList;
     private String tableName;
-
+    private int position;
+    private long id;
 
 
     @Override
@@ -107,6 +110,11 @@ public class MyApp extends Application {
         db.execSQL("DROP TABLE IF EXISTS " + table);
     }
 
+    public void updateRow(String tableName, ContentValues contentValues, String whereColomnsName, String[] equalsValue) {
+        db.update(tableName, contentValues, whereColomnsName, equalsValue);
+    }
+
+
     public String getRecord(String table, int position, String colomnName) {
 
         Cursor c = readAllData(table);
@@ -120,6 +128,7 @@ public class MyApp extends Application {
 
     public void setDrinksList(int position) {
 
+        this.position = position;
         drinksList = new ArrayList<>();
         String drinks = getRecord(TABLE_MAIN, position, COLUMN_DRINKS);
         String drinksPrice = getRecord(TABLE_MAIN, position, COLUMN_DRINKS_PRICE);
@@ -131,13 +140,11 @@ public class MyApp extends Application {
 
             drinksList.add(new Drink(dr[i], drPr[i]));
         }
-
     }
 
     public ArrayList<Drink> getDrinksList() {
         return drinksList;
     }
-
 
     public void setTableName(View view) {
 
@@ -150,4 +157,21 @@ public class MyApp extends Application {
         return tableName;
     }
 
+
+    public void setPosition(int position) {
+
+        this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
 }

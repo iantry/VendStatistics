@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import ivanov.andrey.vendstatistics.activitys.AutomatInfo;
 import ivanov.andrey.vendstatistics.activitys.CreateNewAutomat;
+import ivanov.andrey.vendstatistics.activitys.EditAutomat;
 import ivanov.andrey.vendstatistics.activitys.ListOfStatistics;
 import ivanov.andrey.vendstatistics.activitys.StatisticsByDate;
 
@@ -17,6 +18,13 @@ public class FactoryIntent {
 
         Intent intent = new Intent(context, CreateNewAutomat.class);
         context.startActivity(intent);
+    }
+
+    public static void openEditAutomat(Context context) {
+
+        Intent intent = new Intent(context, EditAutomat.class);
+        context.startActivity(intent);
+
     }
 
 
@@ -35,11 +43,9 @@ public class FactoryIntent {
     }
 
 
-    public static void openStatisticsByDate(Context context, int position) {
+    public static void openStatisticsByDate(Context context) {
 
         Intent intent = new Intent(context, StatisticsByDate.class);
-        intent.putExtra("position", position);
-
         context.startActivity(intent);
     }
 

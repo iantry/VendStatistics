@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/back"
+        android:id="@+id/listOfStatistics"
         android:orderInCategory="100"
         android:title="@string/statistics"
         app:showAsAction="ifRoom"/>

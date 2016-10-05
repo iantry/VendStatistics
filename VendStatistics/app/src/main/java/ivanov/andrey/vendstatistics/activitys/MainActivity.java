@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     String[] from;
     int[] to;
     MyApp myApp;
-    String drinks, drinksPrice;
+
 
 
     @Override
@@ -86,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.item_edit:
                 Toast.makeText(MainActivity.this, info.id + " EDIT", Toast.LENGTH_SHORT).show();
+                myApp.connectToDB();
+                myApp.setId(info.id);                // получаем в глобальной переменной id in table
+                myApp.setDrinksList(info.position);  // получаем в глобальной переменной список напитков по позиции
+                myApp.setTableName(info.targetView); // получаем название таблицы в которой будут происходить изменения
+                FactoryIntent.openEditAutomat(MainActivity.this);
+                myApp.closeConnectToDB();
                 return true;
             case R.id.item_delete:
                 myApp.connectToDB();

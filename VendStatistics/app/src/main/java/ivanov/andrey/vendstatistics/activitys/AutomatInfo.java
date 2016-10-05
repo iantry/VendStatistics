@@ -2,6 +2,7 @@ package ivanov.andrey.vendstatistics.activitys;
 
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,7 +40,8 @@ public class AutomatInfo extends AppCompatActivity {
         Toolbar toolbar = (Toolbar)findViewById(R.id.automat_info_toolbar);
         toolbar.setTitle(R.string.data_add);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
 
         initVariables();
         initViews();
@@ -62,8 +64,14 @@ public class AutomatInfo extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        FactoryIntent.openListOfStatistics(AutomatInfo.this);
-
+        switch (item.getItemId()) {
+            case R.id.listOfStatistics:
+                FactoryIntent.openListOfStatistics(AutomatInfo.this);
+                return true;
+            case android.R.id.home:
+                finish();
+                return true;
+        }
         return true;
     }
 
