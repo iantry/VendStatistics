@@ -39,6 +39,7 @@ public class EditAutomat extends AppCompatActivity {
     MyApp myApp;
     Boolean isEdit;
     int index;
+    String currentNumber, currentName;
 
 
     @Override
@@ -108,6 +109,10 @@ public class EditAutomat extends AppCompatActivity {
         drinksList = myApp.getDrinksList();
         isEdit = false;
         index = -1;
+        myApp.connectToDB();
+        currentName = myApp.getRecord(MyApp.TABLE_MAIN, myApp.getPosition(), MyApp.COLUMN_NAME);
+        currentNumber = myApp.getRecord(MyApp.TABLE_MAIN, myApp.getPosition(), MyApp.COLUMN_NUMBER);
+        myApp.closeConnectToDB();
     }
 
     private void setClickListener() {
@@ -128,10 +133,10 @@ public class EditAutomat extends AppCompatActivity {
 
         editTextName = (EditText)findViewById(R.id.editTextName);
         editTextNumber = (EditText)findViewById(R.id.editTextNumber);
-        myApp.connectToDB();
-        editTextName.setText(myApp.getRecord(MyApp.TABLE_MAIN, myApp.getPosition(), MyApp.COLUMN_NAME));
-        editTextNumber.setText(myApp.getRecord(MyApp.TABLE_MAIN, myApp.getPosition(), MyApp.COLUMN_NUMBER));
-        myApp.closeConnectToDB();
+        editTextName.setText(currentName);
+        editTextNumber.setText(currentNumber);
+
+
 
     }
 
@@ -176,27 +181,6 @@ public class EditAutomat extends AppCompatActivity {
         }
     }
 
-    private void editAutomat() {
-
-        String name = editTextName.getText().toString().trim();
-        String number =  editTextNumber.getText().toString().trim();
-
-        if(name.isEmpty()) {
-            Toast.makeText(EditAutomat.this, "Вы не ввели название автомата", Toast.LENGTH_SHORT).show();
-        }
-        else if(number.isEmpty()){
-            Toast.makeText(EditAutomat.this, "Вы не ввели номер автомата", Toast.LENGTH_SHORT).show();
-        }
-        else {
-
-            if (listOfExistAutomat.contains("№ " + number)) {
-
-                Toast.makeText(EditAutomat.this, "Автомат с таким номером уже существует", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    }
-
     private void addAutomat() {
 
         String name = editTextName.getText().toString().trim();
@@ -209,33 +193,31 @@ public class EditAutomat extends AppCompatActivity {
             Toast.makeText(EditAutomat.this, "Вы не ввели номер автомата", Toast.LENGTH_SHORT).show();
         }
         else {
-
-            if(listOfExistAutomat.contains("№ " + number)) {
-
-                Toast.makeText(EditAutomat.this, "Автомат с таким номером уже существует", Toast.LENGTH_SHORT).show();
-            }
-            else {
-
-                myApp.connectToDB();
-
-                automat = new Automat(name, number);
-                ContentValues contentValues = new ContentValues();
-                prepareDrinksForDB();
-                contentValues.put(MyApp.COLUMN_NAME, name);
-                contentValues.put(MyApp.COLUMN_NUMBER, "№ " +  number);
-                contentValues.put(MyApp.COLUMN_DRINKS, drinks);
-                contentValues.put(MyApp.COLUMN_DRINKS_PRICE, drinksPrice);
-
-                long rowId = myApp.insertToTable(MyApp.TABLE_MAIN, contentValues);
-                Log.d(MyApp.LOG_TAG, "Автомат добавлен ID = " + rowId);
-                myApp.createTable(getStringCreateTable());
-                Toast.makeText(EditAutomat.this, "Автомат добавлен", Toast.LENGTH_SHORT).show();
-                myApp.closeConnectToDB();
-                this.finish();
-            }
+            if(currentNumber.equals("№ " + number))
+                addInDB(name, number);
+            else if(listOfExistAutomat.contains("№ " + number)) Toast.makeText(EditAutomat.this, "Автомат с таким номером уже существует", Toast.LENGTH_SHORT).show();
+            else addInDB(name, number);
         }
     }
 
+
+    public void addInDB(String name, String number) {
+        myApp.connectToDB();
+        automat = new Automat(name, number);
+        ContentValues contentValues = new ContentValues();
+        prepareDrinksForDB();
+        contentValues.put(MyApp.COLUMN_NAME, name);
+        contentValues.put(MyApp.COLUMN_NUMBER, "№ " + number);
+        contentValues.put(MyApp.COLUMN_DRINKS, drinks);
+        contentValues.put(MyApp.COLUMN_DRINKS_PRICE, drinksPrice);
+
+        long rowId = myApp.insertToTable(MyApp.TABLE_MAIN, contentValues);
+        Log.d(MyApp.LOG_TAG, "Автомат добавлен ID = " + rowId);
+        myApp.createTable(getStringCreateTable());
+        Toast.makeText(EditAutomat.this, "Автомат добавлен", Toast.LENGTH_SHORT).show();
+        myApp.closeConnectToDB();
+        this.finish();
+    }
 
     private ArrayList<String> getExistAutomats(){
 

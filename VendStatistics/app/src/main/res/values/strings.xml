@@ -13,6 +13,6 @@
     <string name="dataOn">"Данные на - "</string>
     <string name="dateForThe">Данные за:</string>
     <string name="addNewAutomat">Добавление нового автомата</string>
-    <string name="editAutomat">Изменение автомата</string>
+    <string name="editAutomat">Изменение данных автомата</string>
 
 </resources>
