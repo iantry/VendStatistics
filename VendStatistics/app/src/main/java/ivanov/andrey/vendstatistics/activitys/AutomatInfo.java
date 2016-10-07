@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -67,6 +66,7 @@ public class AutomatInfo extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.listOfStatistics:
                 FactoryIntent.openListOfStatistics(AutomatInfo.this);
+                finish();
                 return true;
             case android.R.id.home:
                 finish();
@@ -105,25 +105,28 @@ public class AutomatInfo extends AppCompatActivity {
             ContentValues contentValues = new ContentValues();
             contentValues.put(MyApp.COLUMN_DATE, date);
 
-            View view;
+            //View view;
             for (int i = 0; i < drinksList.size(); i++) {
-                view = listView.getChildAt(i);
-                EditText editTexPieces = (EditText) view.findViewById(R.id.pieces);
-
-                if (!editTexPieces.getText().toString().isEmpty()) {
-                    piecesOfDrink[i] = Integer.parseInt(editTexPieces.getText().toString());
+               // view = listView.getChildAt(i);
+               // EditText editTexPieces = (EditText) view.findViewById(R.id.pieces);
+               // !editTexPieces.getText().toString().isEmpty()
+//                if (piecesOfDrink[i] == 0) {
+//                    piecesOfDrink[i] = Integer.parseInt(editTexPieces.getText().toString());
                     contentValues.put(MyApp.COLUMN_DRINK + i, piecesOfDrink[i]);
                     Log.d(MyApp.LOG_TAG, "Колличетсво " + i + " напитка = " +  piecesOfDrink[i]);
-                }
-                else {
-                    piecesOfDrink[i] = 0;
-                    contentValues.put(MyApp.COLUMN_DRINK + i, piecesOfDrink[i]);
-                    Log.d(MyApp.LOG_TAG, "Пустое значение");
-                }
+//                }
+//                else {
+                  //  piecesOfDrink[i] = 0;
+               //     contentValues.put(MyApp.COLUMN_DRINK + i, piecesOfDrink[i]);
+                 //   Log.d(MyApp.LOG_TAG, "Пустое значение");
+//                }
             }
             myApp.connectToDB();
             myApp.insertToTable(tableName, contentValues);
             myApp.closeConnectToDB();
+
+            FactoryIntent.openListOfStatistics(AutomatInfo.this);
+            finish();
         }
     };
 
