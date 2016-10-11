@@ -18,7 +18,6 @@ public class Automat {
     }
 
     public void setName(String name) {
-
         this.name = name;
     }
 

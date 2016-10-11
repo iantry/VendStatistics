@@ -111,6 +111,7 @@ public class MyApp extends Application {
     }
 
     public void updateRow(String tableName, ContentValues contentValues, String whereColomnsName, String[] equalsValue) {
+
         db.update(tableName, contentValues, whereColomnsName, equalsValue);
     }
 
@@ -174,4 +175,26 @@ public class MyApp extends Application {
     public long getId() {
         return id;
     }
+
+    public void renameTable(String oldName, String newName) {
+
+        db.execSQL("ALTER TABLE " + oldName + " RENAME TO " + newName);
+    }
+
+    public void addColomn(String tableName, String colomnWithType){
+
+        db.execSQL("ALTER TABLE " + tableName + " ADD COLUMN " + colomnWithType);
+
+    }
+
+    public void copyTableInNewTable (String tableWillBeCopied, String newTable) {
+
+        db.execSQL("INSERT INTO " + newTable + " SELECT * FROM " + tableWillBeCopied);
+    }
+
+    public void copyTableInNewTable (String tableWillBeCopied, String columnsWillBeCopied, String newTable, String newColumns) {
+
+        db.execSQL("INSERT INTO " + newTable + "(" + newColumns + ")" + " SELECT + " + columnsWillBeCopied +  " FROM " + tableWillBeCopied);
+    }
+
 }

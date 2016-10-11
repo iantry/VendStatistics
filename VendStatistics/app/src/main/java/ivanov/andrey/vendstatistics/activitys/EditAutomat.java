@@ -32,14 +32,16 @@ public class EditAutomat extends AppCompatActivity {
     EditText editTextName, editTextNumber, editTextNameDrink, editTextPrice;
     ListView listViewDrinks;
     DrinksAdapter adapter;
-    ArrayList<Drink> drinksList;
+    ArrayList<Drink> oldDrinkList , newDrinkList;
     ArrayList<String> listOfExistAutomat;
     String drinks, drinksPrice;
     Automat automat;
     MyApp myApp;
-    Boolean isEdit;
+    Boolean isEdit , isAddNewDrink, isDeleteDrink;
     int index;
     String currentNumber, currentName;
+    ArrayList<Integer> removePosition;
+
 
 
     @Override
@@ -60,43 +62,9 @@ public class EditAutomat extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.context_menu, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.item_edit:
-                Toast.makeText(EditAutomat.this, "Edit - " + info.id, Toast.LENGTH_SHORT).show();
-                index = info.position;
-                isEdit = true;
-                editTextNameDrink.setText(drinksList.get(index).getName());
-                editTextPrice.setText(drinksList.get(index).getPrice());
-                drinksList.remove(index);
-                adapter.notifyDataSetChanged();
-
-                return true;
-            case R.id.item_delete:
-                Toast.makeText(EditAutomat.this, "Delete - " + info.id, Toast.LENGTH_SHORT).show();
-                drinksList.remove(info.position);
-                adapter.notifyDataSetChanged();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-
-    }
-
     private void setAdapter() {
 
-        adapter = new DrinksAdapter(this, drinksList, R.layout.item_drink, null);
+        adapter = new DrinksAdapter(this, newDrinkList, R.layout.item_drink, null);
         listViewDrinks.setAdapter(adapter);
     }
 
@@ -105,14 +73,18 @@ public class EditAutomat extends AppCompatActivity {
         drinks = "";
         myApp = MyApp.getfInstance();
         listOfExistAutomat = getExistAutomats();
-        drinksList = new ArrayList<>();
-        drinksList = myApp.getDrinksList();
+        oldDrinkList = new ArrayList<>();
+        oldDrinkList = myApp.getDrinksList();
+        newDrinkList = new ArrayList<>(oldDrinkList);
         isEdit = false;
         index = -1;
+        isAddNewDrink = false;
+        isDeleteDrink = false;
         myApp.connectToDB();
         currentName = myApp.getRecord(MyApp.TABLE_MAIN, myApp.getPosition(), MyApp.COLUMN_NAME);
         currentNumber = myApp.getRecord(MyApp.TABLE_MAIN, myApp.getPosition(), MyApp.COLUMN_NUMBER);
         myApp.closeConnectToDB();
+        removePosition = new ArrayList<>();
     }
 
     private void setClickListener() {
@@ -136,8 +108,42 @@ public class EditAutomat extends AppCompatActivity {
         editTextName.setText(currentName);
         editTextNumber.setText(currentNumber);
 
+    }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
 
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch (item.getItemId()) {
+            case R.id.item_edit:
+                Toast.makeText(EditAutomat.this, "Edit - " + info.id, Toast.LENGTH_SHORT).show();
+                index = info.position;
+                isEdit = true;
+                editTextNameDrink.setText(newDrinkList.get(index).getName());
+                editTextPrice.setText(newDrinkList.get(index).getPrice());
+                newDrinkList.remove(index);
+                adapter.notifyDataSetChanged();
+                return true;
+
+            case R.id.item_delete:
+                isDeleteDrink = true;
+                Toast.makeText(EditAutomat.this, "Delete - " + info.id, Toast.LENGTH_SHORT).show();
+                newDrinkList.remove(info.position);
+                removePosition.add(info.position);
+                adapter.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
 
@@ -149,10 +155,7 @@ public class EditAutomat extends AppCompatActivity {
                     addDrink();
                     break;
                 case R.id.buttonSave:
-                    if (drinksList.isEmpty()) {
-                        Toast.makeText(EditAutomat.this, "Вы не добавили ни одного напитка", Toast.LENGTH_SHORT).show();
-                        addAutomat();
-                    }
+                    editExistAutomat();
                     break;
             }
         }
@@ -171,8 +174,13 @@ public class EditAutomat extends AppCompatActivity {
         }
         else {
             Drink drink = new Drink(name, price);
-            if(!isEdit) drinksList.add(drink);
-            else drinksList.add(index, drink);
+
+            if(!isEdit) {
+                newDrinkList.add(drink);
+                isAddNewDrink = true;
+            }
+            else newDrinkList.add(index, drink);
+
             adapter.notifyDataSetChanged();
             editTextNameDrink.setText("");
             editTextPrice.setText("");
@@ -181,7 +189,7 @@ public class EditAutomat extends AppCompatActivity {
         }
     }
 
-    private void addAutomat() {
+    private void editExistAutomat() {
 
         String name = editTextName.getText().toString().trim();
         String number =  editTextNumber.getText().toString().trim();
@@ -193,30 +201,85 @@ public class EditAutomat extends AppCompatActivity {
             Toast.makeText(EditAutomat.this, "Вы не ввели номер автомата", Toast.LENGTH_SHORT).show();
         }
         else {
-            if(currentNumber.equals("№ " + number))
-                addInDB(name, number);
-            else if(listOfExistAutomat.contains("№ " + number)) Toast.makeText(EditAutomat.this, "Автомат с таким номером уже существует", Toast.LENGTH_SHORT).show();
-            else addInDB(name, number);
+            if(currentNumber.equals(number))
+                editInDB(name, number);
+            else if(listOfExistAutomat.contains(number)) Toast.makeText(EditAutomat.this, "Автомат с таким номером уже существует", Toast.LENGTH_SHORT).show();
+            else editInDB(name, number);
         }
     }
 
 
-    public void addInDB(String name, String number) {
+    public void editInDB(String name, String number) {
+
         myApp.connectToDB();
-        automat = new Automat(name, number);
+        automat = new Automat(name, number.replace("№ ", ""));
         ContentValues contentValues = new ContentValues();
         prepareDrinksForDB();
         contentValues.put(MyApp.COLUMN_NAME, name);
-        contentValues.put(MyApp.COLUMN_NUMBER, "№ " + number);
+        contentValues.put(MyApp.COLUMN_NUMBER, number);
         contentValues.put(MyApp.COLUMN_DRINKS, drinks);
         contentValues.put(MyApp.COLUMN_DRINKS_PRICE, drinksPrice);
 
-        long rowId = myApp.insertToTable(MyApp.TABLE_MAIN, contentValues);
-        Log.d(MyApp.LOG_TAG, "Автомат добавлен ID = " + rowId);
-        myApp.createTable(getStringCreateTable());
-        Toast.makeText(EditAutomat.this, "Автомат добавлен", Toast.LENGTH_SHORT).show();
+        // обнавление таблицы с автоматами
+        myApp.updateRow(MyApp.TABLE_MAIN, contentValues, MyApp.COLUMN_NUMBER + " = ?", new String[] {currentNumber});
+
+        // если некоторые напитки были удаленны, то из таблицы нужно удалить столбцы
+        // но SQLite не поддерживает удаление столбцов, поэтому создается временная таблица, туда копируются данные из старой таблицы
+        // затем удалятся старая таблица, создается новая таблица с новым колличеством столбцов, в которой учитываются и старые оставшиеся столбцы и новые
+        // и копируются туда данные с временной таблицы в те столбцы, которые остались от старой таблицы. В конце временная таблица удаляется.
+        if(isDeleteDrink) {
+
+            String tempTable = "tempAutomat" + automat.getNumber();
+            String newTable = "automat" + automat.getNumber();
+            myApp.createTable(getStringCreateTable(true));
+            myApp.copyTableInNewTable(getNameOfTable(currentNumber), tempTable);
+            myApp.deleteTable(newTable);
+            myApp.createTable(getStringCreateTable(false));
+            myApp.copyTableInNewTable(tempTable, getAvailableColumns(), newTable, getNewColumns());
+            myApp.deleteTable(tempTable);
+
+        }
+
+        // если добавлены новые напитки, то в таблицу автомата, нужно добавить столбцы
+        if(isAddNewDrink && !isDeleteDrink) {
+            for(int i = 1; oldDrinkList.size() + i <= newDrinkList.size(); i++) {
+
+                myApp.addColomn(getNameOfTable(currentNumber), MyApp.COLUMN_DRINK + (oldDrinkList.size() + i) + " integer");
+            }
+        }
+
+        // если изменен номер автомата, то нужно поменять название таблицы
+        if(!currentNumber.equals(number)) {
+            myApp.renameTable(getNameOfTable(currentNumber), getNameOfTable(number));
+        }
+
+
+        Toast.makeText(EditAutomat.this, "Автомат изменен", Toast.LENGTH_SHORT).show();
         myApp.closeConnectToDB();
         this.finish();
+    }
+
+    private String getAvailableColumns() {
+
+        String columns = MyApp.COLUMN_ID + ", " + MyApp.COLUMN_DATE;
+
+        for(int i = 0; i < oldDrinkList.size();  i++ ) {
+            //если номер напитка не содержится в удаленных позициях, то столбец включаем в список для копирования
+            if (!removePosition.contains(i))
+                columns = columns + ", drink" + i;
+        }
+
+        return columns;
+    }
+
+    private String getNewColumns() {
+
+        String columns = MyApp.COLUMN_ID + ", " + MyApp.COLUMN_DATE;
+           // из колличества старых напитков вычитаем колличество удаленных напитков получаем колличество оставшихся напитков
+        for(int i = 0; i < oldDrinkList.size() - removePosition.size(); i++)
+            columns = columns + ", drink" + i;
+
+        return columns;
     }
 
     private ArrayList<String> getExistAutomats(){
@@ -238,10 +301,26 @@ public class EditAutomat extends AppCompatActivity {
         return listOfAutomats;
     }
 
+    private String getNameOfTable(String number) {
 
-    private String getStringCreateTable() {
+        String name = number.replace("№ ", "automat");
+        return name;
+    }
 
-        String table = "Create table automat" + automat.getNumber() + " ( " + MyApp.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + MyApp.COLUMN_DATE + " text, ";
+    private String getStringCreateTable(Boolean isTemp) {
+
+        String tableName;
+        ArrayList<Drink> drinksList;
+        if(isTemp) {
+            tableName = "tempAutomat";
+            drinksList = oldDrinkList;
+        }
+        else {
+            tableName = "automat";
+            drinksList = newDrinkList;
+        }
+
+        String table = "Create table " + tableName + automat.getNumber() + " ( " + MyApp.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + MyApp.COLUMN_DATE + " text, ";
         for(int i = 0; i < drinksList.size(); i++) {
 
             if(i < (drinksList.size() - 1)) {
@@ -259,13 +338,13 @@ public class EditAutomat extends AppCompatActivity {
 
 
         Log.d(MyApp.LOG_TAG,"сформированные строки");
-        drinks = drinksList.get(0).getName();
-        drinksPrice = drinksList.get(0).getPrice();
+        drinks = newDrinkList.get(0).getName();
+        drinksPrice = newDrinkList.get(0).getPrice();
 
-        for(int i = 1; i < drinksList.size(); i++) {
+        for(int i = 1; i < newDrinkList.size(); i++) {
 
-            drinks = drinks + this.getString(R.string.separator) + drinksList.get(i).getName();
-            drinksPrice = drinksPrice + this.getString(R.string.separator) + drinksList.get(i).getPrice();
+            drinks = drinks + this.getString(R.string.separator) + newDrinkList.get(i).getName();
+            drinksPrice = drinksPrice + this.getString(R.string.separator) + newDrinkList.get(i).getPrice();
         }
         Log.d(MyApp.LOG_TAG, drinks);
         Log.d(MyApp.LOG_TAG, drinksPrice);

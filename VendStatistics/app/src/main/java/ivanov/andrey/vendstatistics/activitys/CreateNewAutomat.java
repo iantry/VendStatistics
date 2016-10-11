@@ -60,40 +60,6 @@ public class CreateNewAutomat extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.context_menu, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.item_edit:
-                Toast.makeText(CreateNewAutomat.this, "Edit - " + info.id, Toast.LENGTH_SHORT).show();
-                index = info.position;
-                isEdit = true;
-                editTextNameDrink.setText(drinksList.get(index).getName());
-                editTextPrice.setText(drinksList.get(index).getPrice());
-                drinksList.remove(index);
-                adapter.notifyDataSetChanged();
-
-                return true;
-            case R.id.item_delete:
-                Toast.makeText(CreateNewAutomat.this, "Delete - " + info.id, Toast.LENGTH_SHORT).show();
-                drinksList.remove(info.position);
-                adapter.notifyDataSetChanged();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-
-    }
-
     private void setAdapter() {
 
         adapter = new DrinksAdapter(this, drinksList, R.layout.item_drink, null);
@@ -128,6 +94,41 @@ public class CreateNewAutomat extends AppCompatActivity {
         registerForContextMenu(listViewDrinks);
 
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.item_edit:
+                Toast.makeText(CreateNewAutomat.this, "Edit - " + info.id, Toast.LENGTH_SHORT).show();
+                index = info.position;
+                isEdit = true;
+                editTextNameDrink.setText(drinksList.get(index).getName());
+                editTextPrice.setText(drinksList.get(index).getPrice());
+                drinksList.remove(index);
+                adapter.notifyDataSetChanged();
+
+                return true;
+            case R.id.item_delete:
+                Toast.makeText(CreateNewAutomat.this, "Delete - " + info.id, Toast.LENGTH_SHORT).show();
+                drinksList.remove(info.position);
+                adapter.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+
+    }
+
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
