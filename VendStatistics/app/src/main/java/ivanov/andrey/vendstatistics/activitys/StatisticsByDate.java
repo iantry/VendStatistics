@@ -71,7 +71,12 @@ public class StatisticsByDate extends AppCompatActivity {
         String[] pieces = new String[columnCount];
         for(int i = 0; i < columnCount; i++) {
             int numberColumnIndex = cursor.getColumnIndex(MyApp.COLUMN_DRINK+i);
-            pieces[i] = cursor.getString(numberColumnIndex);
+
+            if(!cursor.isNull(numberColumnIndex)) {
+                pieces[i] = cursor.getString(numberColumnIndex);
+            }
+            else
+                pieces[i] = "0";
         }
         return pieces;
     }

@@ -244,7 +244,8 @@ public class EditAutomat extends AppCompatActivity {
         if(isAddNewDrink && !isDeleteDrink) {
             for(int i = 1; oldDrinkList.size() + i <= newDrinkList.size(); i++) {
 
-                myApp.addColomn(getNameOfTable(currentNumber), MyApp.COLUMN_DRINK + (oldDrinkList.size() + i) + " integer");
+                // тут - 1 нужно, потому что названия напитков начиются с drink0
+                myApp.addColomn(getNameOfTable(currentNumber), MyApp.COLUMN_DRINK + (oldDrinkList.size() + i - 1) + " integer");
             }
         }
 
@@ -275,7 +276,7 @@ public class EditAutomat extends AppCompatActivity {
     private String getNewColumns() {
 
         String columns = MyApp.COLUMN_ID + ", " + MyApp.COLUMN_DATE;
-           // из колличества старых напитков вычитаем колличество удаленных напитков получаем колличество оставшихся напитков
+        // из колличества старых напитков вычитаем колличество удаленных напитков получаем колличество оставшихся напитков
         for(int i = 0; i < oldDrinkList.size() - removePosition.size(); i++)
             columns = columns + ", drink" + i;
 
@@ -335,7 +336,6 @@ public class EditAutomat extends AppCompatActivity {
 
 
     private void prepareDrinksForDB() {
-
 
         Log.d(MyApp.LOG_TAG,"сформированные строки");
         drinks = newDrinkList.get(0).getName();

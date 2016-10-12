@@ -122,7 +122,8 @@ public class AutomatInfo extends AppCompatActivity {
 //                }
             }
             myApp.connectToDB();
-            myApp.insertToTable(tableName, contentValues);
+            long j =  myApp.insertToTable(tableName, contentValues);
+            Log.d(MyApp.LOG_TAG, "вставленно в позицию - " + j);
             myApp.closeConnectToDB();
 
             FactoryIntent.openListOfStatistics(AutomatInfo.this);

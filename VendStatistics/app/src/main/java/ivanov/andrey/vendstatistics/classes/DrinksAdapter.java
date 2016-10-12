@@ -62,7 +62,7 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
 
             if (convertView.findViewById(R.id.pieces) != null) {
                 holder.editTextPieces = (EditText) convertView.findViewById(R.id.pieces);
-                //holder.editTextPieces.setTag(position);
+
             }
             if (piecesOfDrinks != null) {
                 holder.textPieces = (TextView) convertView.findViewById(R.id.textViewPieces);
