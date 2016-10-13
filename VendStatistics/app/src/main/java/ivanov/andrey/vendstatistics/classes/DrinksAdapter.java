@@ -83,6 +83,7 @@ public class DrinksAdapter extends ArrayAdapter<Drink> {
                         EditText et = (EditText) v.findViewById(R.id.pieces);
                         if(!et.getText().toString().isEmpty()) automatInfo.piecesOfDrink[pos] = Integer.parseInt(et.getText().toString());
                         else automatInfo.piecesOfDrink[pos] = 0;
+
                         editUpdatePieces[pos] = et.getText().toString();
                 }
             });

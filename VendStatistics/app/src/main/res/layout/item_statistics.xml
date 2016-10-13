@@ -40,7 +40,8 @@
         android:gravity="center"
         android:layout_weight="1"
         android:inputType="number"
-        android:maxLength="4"/>
+        android:maxLength="4"
+        android:ems="10"/>
 
 
 
